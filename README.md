@@ -1,44 +1,44 @@
 # WICKED GRIN — Combat Arms Clan
 
-Site oficial do clã **WICKED GRIN**, construído como uma experiência tática/cyber em português do Brasil. O projeto usa React, TypeScript, TanStack Start, Vite e Tailwind CSS.
+Site oficial do clã **WICKED GRIN**, com identidade de base tática noturna em português do Brasil. O projeto usa React, TypeScript, TanStack Start, Vite e Tailwind CSS.
 
 > Combat Arms e marcas relacionadas pertencem aos seus respectivos proprietários. Este é um site independente de fãs e não possui afiliação ou endosso oficial.
+
+## Estrutura atual
+
+O site foi reduzido para seis áreas: **Início, Sobre, Membros, Regras, Recrutamento e Comunidade**. Ranking, operações e galeria foram removidos da home para reduzir ruído visual e deixar a navegação mais objetiva.
 
 ## Desenvolvimento
 
 ```bash
-npm install
-npm run dev
+bun install
+bun run test
+bun run build
 ```
 
-Para validar antes de publicar:
+## Banner
 
-```bash
-npm run test
-npm run build
-```
+O banner limpo aprovado pelo clã é carregado por `src/assets/wicked-banner.ts` e pelos fragmentos em `src/assets/banner/`. Ele é mantido como arte de fundo, sem botões ou controles embutidos. A interface, navegação e painéis ficam separados em HTML/CSS.
 
-## Conteúdo editável
+Não substitua o banner por ilustração gerada. No mobile o ponto focal é controlado por `object-position` em `src/banner-v2.css`.
 
-Os dados de membros, ranking, partidas e links da comunidade ficam em:
+## Membros
+
+Todos os dados da equipe ficam em um único arquivo:
 
 - `src/data/clan.ts`
 
-Nesse arquivo você pode alterar nicks, funções, patentes, armas favoritas, K/D, vitórias, partidas, Discord e redes sociais sem mexer na composição visual.
+Cada membro possui `id`, `nick`, hierarquia, função, patente, arma, status, data de entrada e observação. Para adicionar um membro, duplique um objeto da lista `members` e edite os campos. Para remover, apague o objeto correspondente.
 
-## Banner e identidade
-
-O hero atual usa o asset provisório:
-
-- `src/assets/wicked-operator.jpg`
-
-Para trocar pela arte final, substitua esse arquivo mantendo o mesmo nome ou altere a importação em `src/routes/index.tsx`. Para produção, prefira WebP/AVIF em alta resolução. O símbolo do sorriso e os ícones táticos reutilizáveis ficam em `src/components/clan/marks.tsx`.
+Não existe painel administrativo nem banco de dados nesta versão. A edição é feita no arquivo e publicada pelo GitHub.
 
 ## Recrutamento
 
-O formulário em `src/components/clan/recruitment.tsx` está funcional apenas no navegador e **não persiste dados**. A validação fica em `src/components/clan/recruitment-schema.ts`.
+O formulário fica em `src/components/clan/recruitment.tsx`, com validação em `src/components/clan/recruitment-schema.ts`.
 
-Para ativar o envio real, conecte Supabase ou outro backend e substitua o estado demonstrativo pelo envio seguro. Nunca coloque chaves privadas no front-end.
+Ele tem três etapas: **Dados do jogador → Experiência → Motivação**. O envio está em **modo demonstração** e não salva dados.
+
+Para ativar candidaturas reais, conecte Supabase, um endpoint próprio ou um serviço de formulários e substitua o estado de sucesso local pelo envio seguro. Nunca exponha chaves privadas no front-end.
 
 ## Discord e redes
 
@@ -50,20 +50,24 @@ export const clanConfig = {
   discordServerId: '...',
   instagram: 'https://instagram.com/...',
   youtube: 'https://youtube.com/@...',
+  twitch: 'https://twitch.tv/...',
 };
 ```
 
-O widget/CTA só deve ser ativado quando o servidor e o convite estiverem configurados.
+## Identidade visual
+
+Os tokens de cor, vidro, blur, botões chanfrados, campos, filtros, modal de membro e responsividade ficam centralizados em `src/banner-v2.css`. Os ícones táticos reutilizáveis e o sorriso ficam em `src/components/clan/marks.tsx`.
+
+A interface respeita `prefers-reduced-motion` e `prefers-reduced-transparency`, e inclui fallback para navegadores sem `backdrop-filter`.
 
 ## Lovable
 
-Este repositório continua conectado ao projeto Lovable existente para **visualização e hospedagem**. O desenvolvimento do site pode ser feito diretamente no GitHub; mudanças publicadas em `main` sincronizam com o projeto conectado.
+A Lovable fica somente para **visualização e hospedagem**. O desenvolvimento pode ser feito diretamente no GitHub; mudanças incorporadas à `main` sincronizam com o projeto conectado.
 
 ## Pendências antes do lançamento definitivo
 
-- Inserir logo oficial do clã, se houver.
-- Trocar o banner provisório pela arte final em alta resolução.
-- Configurar Discord e redes sociais.
-- Conectar backend do recrutamento.
-- Substituir os membros, estatísticas e partidas fictícias pelos dados reais do clã.
+- Configurar convite/ID do Discord e redes sociais.
+- Conectar o backend do recrutamento.
+- Substituir dados fictícios dos membros pelos dados reais do clã.
+- Ajustar os números demonstrativos do hero para os números reais.
 - Definir domínio e imagem Open Graph definitiva.
