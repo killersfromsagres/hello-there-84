@@ -10,6 +10,6 @@ import p7 from './banner/part7.txt?raw';
 import p8 from './banner/part8.txt?raw';
 import p9 from './banner/part9.txt?raw';
 
-// Mantém a arte oficial fornecida pelo clã como única camada visual do hero.
-// O realce luminoso do lettering é aplicado em CSS, sem recriar ou substituir a imagem.
-export const wickedBanner = `data:image/webp;base64,${p0}${p1}${p2}${p3}${p4}${p5}${p6}${p7}${p8}${p9}`;
+// Arte fornecida pelo clã, preparada para entrega web em Full HD 1920×1080.
+// Não há geração nem substituição visual: o glow do lettering é uma camada CSS separada.
+export const wickedBanner = `data:image/avif;base64,${p0}${p1}${p2}${p3}${p4}${p5}${p6}${p7}${p8}${p9}`;
