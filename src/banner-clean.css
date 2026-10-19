@@ -1,192 +1,180 @@
-/* Banner presentation: preserve the supplied artwork, keep the image sharp and merge it optically into the site. */
+/* Premium banner presentation: keeps the supplied artwork as the hero, sharpens the scene,
+   creates a professional fusion with the site background, and lights only the baked-in
+   WICKED / GRIN lettering without repainting the artwork. */
+
 .wg-hero {
   position: relative;
   isolation: isolate;
-  min-height: 640px;
-  height: clamp(640px, 56.25vw, 100svh);
+  min-height: min(100svh, 780px);
+  height: min(100svh, 56.25vw);
   max-height: 1080px;
-  margin-bottom: -2px;
-  background: #07090b;
   overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 16%, rgba(104, 192, 255, 0.12), transparent 28%),
+    radial-gradient(circle at 50% 114%, rgba(155, 255, 61, 0.05), transparent 30%),
+    #07090b;
+  box-shadow: inset 0 -160px 140px -124px rgba(7, 9, 11, 0.96);
 }
 
-/* Do not apply CSS filters or GPU scaling to the source image: both soften the baked-in lettering and texture. */
 .wg-hero-art {
   position: absolute;
   inset: 0;
-  z-index: -4;
+  z-index: 0;
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 50% 50%;
-  display: block;
-  filter: none !important;
-  transform: none !important;
+  object-position: center center;
   image-rendering: auto;
-  backface-visibility: hidden;
+  filter: contrast(1.06) saturate(1.05) brightness(1.02);
+  transform: translateZ(0) scale(1.004);
+  will-change: transform;
 }
 
-/* The artwork is the hero. Hide the previous copy/stats so nothing competes with it. */
+/* Keep the banner clean: only the site chrome remains above the artwork. */
 .wg-hero .wg-hero-copy,
-.wg-hero .wg-hero-stats {
+.wg-hero .wg-hero-stats,
+.wg-hero .wg-tactical-grid,
+.wg-hero .wg-hero-vignette {
   display: none !important;
 }
 
-/* Cinematic vignette + deep bottom fade. This is what makes the banner feel fused with #07090b instead of pasted on top. */
-.wg-hero .wg-hero-vignette {
-  display: block !important;
-  position: absolute;
-  inset: 0;
-  z-index: -2;
-  pointer-events: none;
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(1, 4, 7, .12) 0%,
-      rgba(1, 4, 7, .02) 23%,
-      rgba(7, 9, 11, .04) 54%,
-      rgba(7, 9, 11, .26) 70%,
-      rgba(7, 9, 11, .72) 86%,
-      #07090b 100%
-    ),
-    radial-gradient(ellipse at 50% 42%, transparent 45%, rgba(0, 0, 0, .18) 72%, rgba(0, 0, 0, .42) 100%);
-}
-
-/* A controlled light sweep is masked to the two lettering zones. It brightens the baked-in WICKED / GRIN text without covering the operator. */
-.wg-hero .wg-tactical-grid {
-  display: block !important;
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  opacity: .28;
-  background:
-    linear-gradient(108deg, transparent 0 31%, rgba(236, 249, 255, .04) 38%, rgba(236, 249, 255, .26) 47%, rgba(164, 221, 255, .09) 54%, transparent 64% 100%);
-  background-size: 220% 100%;
-  background-position: 140% 0;
-  mix-blend-mode: screen;
-  -webkit-mask-image:
-    radial-gradient(ellipse 31% 24% at 22% 39%, #000 14%, rgba(0,0,0,.8) 42%, transparent 78%),
-    radial-gradient(ellipse 31% 24% at 79% 39%, #000 14%, rgba(0,0,0,.8) 42%, transparent 78%);
-  mask-image:
-    radial-gradient(ellipse 31% 24% at 22% 39%, #000 14%, rgba(0,0,0,.8) 42%, transparent 78%),
-    radial-gradient(ellipse 31% 24% at 79% 39%, #000 14%, rgba(0,0,0,.8) 42%, transparent 78%);
-  -webkit-mask-composite: source-over;
-  mask-composite: add;
-  animation: wgLetterSweep 8s cubic-bezier(.45,.05,.25,1) infinite;
-}
-
-/* Bloom behind the lettering plus cold rim light around the upper center. */
+/* Cold bloom + soft sweep only on the two lettering regions. */
 .wg-hero::before {
   content: "";
   position: absolute;
   inset: 0;
-  z-index: -1;
+  z-index: 1;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 28% 18% at 21% 39%, rgba(226, 247, 255, .26) 0%, rgba(153, 218, 255, .12) 35%, transparent 72%),
-    radial-gradient(ellipse 28% 18% at 80% 39%, rgba(226, 247, 255, .26) 0%, rgba(153, 218, 255, .12) 35%, transparent 72%),
-    radial-gradient(ellipse 26% 28% at 50% 22%, rgba(133, 210, 255, .11), transparent 72%);
+    radial-gradient(ellipse 34% 18% at 21% 33%, rgba(230, 247, 255, 0.30) 0%, rgba(160, 220, 255, 0.16) 34%, rgba(116, 180, 230, 0.05) 58%, transparent 74%),
+    radial-gradient(ellipse 34% 18% at 79% 34%, rgba(230, 247, 255, 0.30) 0%, rgba(160, 220, 255, 0.16) 34%, rgba(116, 180, 230, 0.05) 58%, transparent 74%),
+    linear-gradient(105deg, transparent 13%, rgba(220, 245, 255, 0.04) 26%, rgba(220, 245, 255, 0.12) 34%, rgba(220, 245, 255, 0.04) 43%, transparent 56%),
+    radial-gradient(circle at 50% 16%, rgba(116, 188, 255, 0.12), transparent 24%);
   mix-blend-mode: screen;
-  filter: blur(8px);
-  opacity: .86;
-  animation: wgLetterBloom 5.8s ease-in-out infinite alternate;
+  opacity: 0.95;
+  filter: blur(14px);
+  animation: wgHeroLetterSweep 8.5s ease-in-out infinite alternate;
 }
 
-/* Atmospheric bridge into the first section: dark fade + smoke-like blue/red ambient light. */
+/* Global cinematic finish + seamless bottom fusion into the site background. */
 .wg-hero::after {
   content: "";
   position: absolute;
-  z-index: 1;
+  inset: 0;
+  z-index: 2;
   pointer-events: none;
-  left: 0;
-  right: 0;
-  bottom: -1px;
-  height: 38%;
   background:
-    radial-gradient(ellipse 46% 30% at 18% 86%, rgba(92, 169, 211, .10), transparent 68%),
-    radial-gradient(ellipse 44% 28% at 84% 86%, rgba(255, 45, 75, .055), transparent 70%),
-    linear-gradient(to bottom, transparent 0%, rgba(7, 9, 11, .10) 22%, rgba(7, 9, 11, .42) 56%, rgba(7, 9, 11, .86) 83%, #07090b 100%);
+    radial-gradient(circle at center, transparent 48%, rgba(0, 0, 0, 0.14) 73%, rgba(0, 0, 0, 0.34) 100%),
+    radial-gradient(circle at 16% 102%, rgba(118, 205, 255, 0.14), transparent 24%),
+    radial-gradient(circle at 84% 104%, rgba(255, 45, 75, 0.16), transparent 24%),
+    radial-gradient(circle at 50% 104%, rgba(255, 255, 255, 0.07), transparent 34%),
+    linear-gradient(to bottom,
+      rgba(7, 9, 11, 0) 0%,
+      rgba(7, 9, 11, 0.02) 42%,
+      rgba(7, 9, 11, 0.12) 58%,
+      rgba(7, 9, 11, 0.32) 72%,
+      rgba(7, 9, 11, 0.74) 88%,
+      #07090b 100%);
 }
 
-/* Keep site navigation above all optical layers. */
-.wg-hero .wg-nav {
-  z-index: 20;
+.wg-hero > .wg-nav {
+  position: relative;
+  z-index: 4;
 }
 
-@keyframes wgLetterBloom {
-  from { opacity: .68; filter: blur(10px) brightness(.96); }
-  to { opacity: .96; filter: blur(6px) brightness(1.12); }
+@keyframes wgHeroLetterSweep {
+  from {
+    opacity: 0.76;
+    filter: blur(16px) brightness(0.96);
+    transform: translate3d(-1.5%, 0, 0);
+  }
+  to {
+    opacity: 0.98;
+    filter: blur(12px) brightness(1.12);
+    transform: translate3d(1.2%, 0, 0);
+  }
 }
 
-@keyframes wgLetterSweep {
-  0%, 18% { background-position: 145% 0; opacity: .08; }
-  42% { opacity: .34; }
-  58% { background-position: -45% 0; opacity: .24; }
-  75%, 100% { background-position: -45% 0; opacity: .08; }
+@media (max-width: 1180px) {
+  .wg-hero {
+    min-height: min(84svh, 740px);
+    height: min(84svh, 66vw);
+  }
 }
 
 @media (max-width: 900px) {
   .wg-hero {
-    min-height: 70svh;
-    height: 70svh;
+    min-height: 74svh;
+    height: 74svh;
     max-height: none;
   }
 
   .wg-hero-art {
-    object-position: 50% 43%;
-  }
-
-  .wg-hero .wg-tactical-grid {
-    opacity: .20;
-    -webkit-mask-image:
-      radial-gradient(ellipse 38% 20% at 18% 39%, #000 10%, transparent 75%),
-      radial-gradient(ellipse 38% 20% at 82% 39%, #000 10%, transparent 75%);
-    mask-image:
-      radial-gradient(ellipse 38% 20% at 18% 39%, #000 10%, transparent 75%),
-      radial-gradient(ellipse 38% 20% at 82% 39%, #000 10%, transparent 75%);
+    object-position: 50% 42%;
+    filter: contrast(1.05) saturate(1.04) brightness(1.01);
+    transform: translateZ(0) scale(1.02);
   }
 
   .wg-hero::before {
-    filter: blur(7px);
-    opacity: .72;
+    background:
+      radial-gradient(ellipse 42% 16% at 18% 30%, rgba(230, 247, 255, 0.24) 0%, rgba(160, 220, 255, 0.12) 36%, rgba(116, 180, 230, 0.04) 60%, transparent 76%),
+      radial-gradient(ellipse 42% 16% at 82% 31%, rgba(230, 247, 255, 0.24) 0%, rgba(160, 220, 255, 0.12) 36%, rgba(116, 180, 230, 0.04) 60%, transparent 76%),
+      linear-gradient(106deg, transparent 16%, rgba(220, 245, 255, 0.04) 34%, rgba(220, 245, 255, 0.08) 42%, rgba(220, 245, 255, 0.04) 50%, transparent 60%);
+    filter: blur(12px);
+    opacity: 0.82;
   }
 
   .wg-hero::after {
-    height: 34%;
+    background:
+      radial-gradient(circle at center, transparent 46%, rgba(0, 0, 0, 0.12) 72%, rgba(0, 0, 0, 0.28) 100%),
+      radial-gradient(circle at 18% 102%, rgba(118, 205, 255, 0.10), transparent 23%),
+      radial-gradient(circle at 82% 104%, rgba(255, 45, 75, 0.12), transparent 23%),
+      linear-gradient(to bottom,
+        rgba(7, 9, 11, 0) 0%,
+        rgba(7, 9, 11, 0.08) 58%,
+        rgba(7, 9, 11, 0.32) 74%,
+        rgba(7, 9, 11, 0.76) 90%,
+        #07090b 100%);
   }
 }
 
 @media (max-width: 560px) {
   .wg-hero {
-    min-height: 64svh;
-    height: 64svh;
+    min-height: 66svh;
+    height: 66svh;
   }
 
   .wg-hero-art {
-    object-position: 50% 39%;
+    object-position: 50% 38%;
+    transform: translateZ(0) scale(1.05);
   }
 
-  .wg-hero::after {
-    height: 31%;
+  .wg-hero::before {
+    filter: blur(10px);
+    opacity: 0.7;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .wg-hero::before,
-  .wg-hero .wg-tactical-grid {
+  .wg-hero::before {
     animation: none;
+    transform: none;
   }
 }
 
 @media (prefers-reduced-transparency: reduce) {
-  .wg-hero::before,
-  .wg-hero .wg-tactical-grid {
-    opacity: .18;
-    filter: none;
+  .wg-hero::before {
+    opacity: 0.5;
+    filter: blur(8px);
   }
 
-  .wg-hero .wg-hero-vignette {
-    background: linear-gradient(to bottom, rgba(7,9,11,.08), rgba(7,9,11,.94) 100%);
+  .wg-hero::after {
+    background:
+      linear-gradient(to bottom,
+        rgba(7, 9, 11, 0.04) 0%,
+        rgba(7, 9, 11, 0.14) 56%,
+        rgba(7, 9, 11, 0.48) 78%,
+        #07090b 100%);
   }
 }
