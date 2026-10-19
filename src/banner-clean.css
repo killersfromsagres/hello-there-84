@@ -1,0 +1,107 @@
+/* Banner-only presentation: keeps the supplied artwork unobstructed and adds optical light around the baked-in WICKED / GRIN lettering. */
+.wg-hero {
+  min-height: min(100svh, 680px);
+  height: min(100svh, 56.25vw);
+  max-height: 1080px;
+  background: #020406;
+  overflow: hidden;
+}
+
+.wg-hero-art {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  filter: contrast(1.07) saturate(1.05) brightness(1.035);
+  transform: translateZ(0) scale(1.002);
+}
+
+/* Remove all hero UI that competed with the artwork. Navigation remains as site chrome. */
+.wg-hero .wg-hero-copy,
+.wg-hero .wg-hero-stats,
+.wg-hero .wg-tactical-grid,
+.wg-hero .wg-hero-vignette {
+  display: none !important;
+}
+
+/* Professional bloom positioned only over the two text blocks, leaving the operator clean. */
+.wg-hero::before,
+.wg-hero::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  top: 19%;
+  width: 43%;
+  height: 39%;
+  opacity: .78;
+  mix-blend-mode: screen;
+  filter: blur(18px);
+  will-change: opacity, filter;
+}
+
+.wg-hero::before {
+  left: -2%;
+  background:
+    radial-gradient(ellipse at 45% 52%, rgba(234, 249, 255, .30) 0%, rgba(145, 218, 255, .16) 28%, rgba(83, 168, 218, .055) 47%, transparent 70%),
+    linear-gradient(90deg, transparent 3%, rgba(207, 240, 255, .08) 36%, transparent 96%);
+  animation: wgLetterBloom 6.5s ease-in-out infinite alternate;
+}
+
+.wg-hero::after {
+  right: -2%;
+  background:
+    radial-gradient(ellipse at 55% 52%, rgba(234, 249, 255, .30) 0%, rgba(145, 218, 255, .16) 28%, rgba(83, 168, 218, .055) 47%, transparent 70%),
+    linear-gradient(90deg, transparent 4%, rgba(207, 240, 255, .08) 64%, transparent 97%);
+  animation: wgLetterBloom 7.2s ease-in-out .7s infinite alternate;
+}
+
+/* Bottom fusion is deliberately subtle and does not alter the banner composition. */
+.wg-hero > .wg-nav + * { pointer-events: none; }
+.wg-hero { box-shadow: inset 0 -80px 70px -72px rgba(7, 9, 11, .9); }
+
+@keyframes wgLetterBloom {
+  from { opacity: .56; filter: blur(20px) brightness(.92); }
+  to { opacity: .86; filter: blur(14px) brightness(1.12); }
+}
+
+@media (max-width: 900px) {
+  .wg-hero {
+    min-height: 72svh;
+    height: 72svh;
+    max-height: none;
+  }
+  .wg-hero-art {
+    object-fit: cover;
+    object-position: 50% 42%;
+  }
+  .wg-hero::before,
+  .wg-hero::after {
+    top: 23%;
+    width: 52%;
+    height: 34%;
+    opacity: .64;
+    filter: blur(14px);
+  }
+}
+
+@media (max-width: 560px) {
+  .wg-hero {
+    min-height: 64svh;
+    height: 64svh;
+  }
+  .wg-hero-art { object-position: 50% 38%; }
+  .wg-hero::before { left: -12%; }
+  .wg-hero::after { right: -12%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wg-hero::before,
+  .wg-hero::after { animation: none; }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .wg-hero::before,
+  .wg-hero::after { opacity: .42; filter: blur(10px); }
+}
