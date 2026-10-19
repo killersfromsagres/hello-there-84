@@ -105,17 +105,36 @@ function WickedGrinPage() {
       <a href="#sobre" className="wg-skip">Ir para o conteúdo</a>
 
       <section id="inicio" className="wg-hero" aria-label="Início WICKED GRIN">
-        <img
-          src={wickedBanner}
+        <svg
           className="wg-hero-art"
-          alt="Arte oficial WICKED GRIN com personagem mascarado e lettering do clã"
-          width={1672}
-          height={941}
-          fetchPriority="high"
-          loading="eager"
-          decoding="async"
-          draggable={false}
-        />
+          viewBox="0 0 3840 2160"
+          preserveAspectRatio="xMidYMid slice"
+          role="img"
+          aria-labelledby="wg-hero-art-title"
+        >
+          <title id="wg-hero-art-title">Banner WICKED GRIN com personagem mascarado e lettering do clã</title>
+          <defs>
+            <filter id="wg-hero-sharpen" x="-2%" y="-2%" width="104%" height="104%" colorInterpolationFilters="sRGB">
+              <feConvolveMatrix
+                order="3"
+                kernelMatrix="0 -0.18 0 -0.18 1.72 -0.18 0 -0.18 0"
+                divisor="1"
+                bias="0"
+                preserveAlpha="true"
+              />
+            </filter>
+          </defs>
+          <image
+            href={wickedBanner}
+            x="0"
+            y="0"
+            width="3840"
+            height="2160"
+            preserveAspectRatio="xMidYMid slice"
+            filter="url(#wg-hero-sharpen)"
+          />
+        </svg>
+        <div className="wg-hero-lettering-fx" aria-hidden="true" />
         <div className="wg-hero-vignette" aria-hidden="true" />
         <div className="wg-tactical-grid" aria-hidden="true" />
 
