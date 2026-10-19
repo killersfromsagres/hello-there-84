@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">WICKED GRIN</title>
+  <desc id="desc">Imagem de compartilhamento do clã WICKED GRIN</desc>
+  <defs>
+    <radialGradient id="acid" cx="78%" cy="36%" r="55%"><stop stop-color="#b6ff2e" stop-opacity=".17"/><stop offset="1" stop-color="#07080b" stop-opacity="0"/></radialGradient>
+    <radialGradient id="red" cx="18%" cy="80%" r="46%"><stop stop-color="#ff2d4b" stop-opacity=".14"/><stop offset="1" stop-color="#07080b" stop-opacity="0"/></radialGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse"><path d="M48 0H0V48" fill="none" stroke="#eceff4" stroke-opacity=".045"/></pattern>
+  </defs>
+  <rect width="1200" height="630" fill="#07080b"/>
+  <rect width="1200" height="630" fill="url(#acid)"/>
+  <rect width="1200" height="630" fill="url(#red)"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <path d="M835 165 930 198 906 146M1110 165l-95 33 24-52" fill="none" stroke="#b6ff2e" stroke-width="13" opacity=".84"/>
+  <path d="M800 222q171 187 342 0l-46 77-26-43-38 76-30-50-31 74-30-74-29 50-39-76-25 43Z" fill="#b6ff2e" opacity=".82"/>
+  <path d="M70 76h122M70 76v55M1130 499v55h-122" stroke="#ff2d4b" stroke-width="2"/>
+  <text x="76" y="160" fill="#b6ff2e" font-family="monospace" font-size="20" letter-spacing="6">COMBAT ARMS CLAN // BR</text>
+  <text x="70" y="350" fill="#eceff4" font-family="Arial Narrow, sans-serif" font-weight="800" font-size="148" letter-spacing="-8">WICKED</text>
+  <text x="70" y="475" fill="none" stroke="#eceff4" stroke-opacity=".82" stroke-width="2" font-family="Arial Narrow, sans-serif" font-weight="800" font-size="148" letter-spacing="-8">GRIN</text>
+  <text x="78" y="548" fill="#8a94a6" font-family="monospace" font-size="21" letter-spacing="3">SORRIMOS ANTES DO PRIMEIRO TIRO.</text>
+</svg>
