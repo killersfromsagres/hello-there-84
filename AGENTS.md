@@ -8,3 +8,8 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Keep the clan experience in the index route with in-page anchors; this is an explicitly single-page website.
+- Store roster, rankings, match schedules and service configuration in `src/data/clan.ts` so content remains separate from presentation.
+- Keep recruitment validation in a shared Zod schema and the form in a focused component; demonstrate locally until a real service is connected, without browser persistence.
+- Use global semantic CSS tokens and design-system Button variants for the tactical visual language; custom SVG marks stay reusable in the clan marks module.
