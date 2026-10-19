@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { useEffect, useMemo, useState } from 'react';
 import { Grin, TacticalIcon } from '@/components/clan/marks';
 import { Recruitment } from '@/components/clan/recruitment';
-import { members, sortRanking, monthly, matches, conduct, clanConfig, type SortKey } from '@/data/clan';
+import { clanConfig, conduct, members, type Hierarchy, type Member } from '@/data/clan';
 import { wickedBanner } from '@/assets/wicked-banner';
 import '../banner-v2.css';
 
@@ -11,9 +11,9 @@ export const Route = createFileRoute('/')({
   head: () => ({
     meta: [
       { title: 'WICKED GRIN — Clã de Combat Arms' },
-      { name: 'description', content: 'WICKED GRIN: operações, esquadrão, ranking, código de conduta e recrutamento do clã.' },
+      { name: 'description', content: 'WICKED GRIN: clã tático de Combat Arms. Conheça o esquadrão, as regras e o recrutamento.' },
       { property: 'og:title', content: 'WICKED GRIN — Sorrimos antes do primeiro tiro.' },
-      { property: 'og:description', content: 'Precisão, disciplina e caos controlado. Conheça o WICKED GRIN.' },
+      { property: 'og:description', content: 'Precisão, disciplina e caos controlado.' },
       { property: 'og:image', content: '/og-wicked-grin.svg' },
       { name: 'twitter:card', content: 'summary_large_image' },
     ],
@@ -21,239 +21,159 @@ export const Route = createFileRoute('/')({
 });
 
 const nav = [
-  ['sobre', 'O CLÃ'],
-  ['equipe', 'EQUIPE'],
-  ['ranking', 'RANKING'],
-  ['operacoes', 'OPERAÇÕES'],
-  ['galeria', 'GALERIA'],
-  ['conduta', 'REGRAS'],
+  ['inicio', 'Início'],
+  ['sobre', 'Sobre'],
+  ['membros', 'Membros'],
+  ['regras', 'Regras'],
+  ['recrutamento', 'Recrutamento'],
+  ['comunidade', 'Comunidade'],
 ] as const;
 
-function SectionHead({ n, kicker, title, accent }: { n: string; kicker: string; title: string; accent?: string }) {
+const groups: Hierarchy[] = ['Comando', 'Oficiais', 'Soldados', 'Recrutas'];
+
+function SectionHead({ n, kicker, title, text }: { n: string; kicker: string; title: string; text?: string }) {
   return (
     <header className="wg-section-head">
-      <span className="wg-index">// {n}</span>
+      <span className="wg-section-code">// {n}</span>
       <div>
-        <span className="wg-kicker">{kicker}</span>
-        <h2>{title} {accent && <em>{accent}</em>}</h2>
+        <span className="wg-eyebrow">{kicker}</span>
+        <h2>{title}</h2>
+        {text && <p>{text}</p>}
       </div>
-      <span className="wg-coordinate">WG-{n} / BR</span>
     </header>
   );
 }
 
-function Countdown({ date }: { date: string }) {
-  const [now, setNow] = useState(() => Date.now());
-  useEffect(() => {
-    const timer = window.setInterval(() => setNow(Date.now()), 1000);
-    return () => window.clearInterval(timer);
-  }, []);
-  const left = Math.max(0, new Date(date).getTime() - now);
-  const seconds = Math.floor(left / 1000);
-  if (!left) return <span>OPERAÇÃO INICIADA</span>;
-  return <span>{String(Math.floor(seconds / 86400)).padStart(2, '0')}D : {String(Math.floor(seconds / 3600) % 24).padStart(2, '0')}H : {String(Math.floor(seconds / 60) % 60).padStart(2, '0')}M : {String(seconds % 60).padStart(2, '0')}S</span>;
+function RankInsignia({ rank }: { rank: Member['rank'] }) {
+  const stars = rank === 'General' ? 3 : rank === 'Coronel' ? 2 : rank === 'Major' ? 1 : 0;
+  const bars = rank === 'Capitão' ? 3 : rank === 'Tenente' ? 2 : rank === 'Sargento' ? 1 : 2;
+  return (
+    <svg className="wg-rank-icon" viewBox="0 0 64 64" aria-hidden="true">
+      <path d="M10 42 32 52 54 42 49 49 32 58 15 49Z" />
+      {[...Array(stars)].map((_, index) => <path key={`s-${index}`} d={`M${18 + index * 14} 12l2.2 4.8 5.2.6-3.8 3.5 1 5.1-4.6-2.5-4.6 2.5 1-5.1-3.8-3.5 5.2-.6Z`} />)}
+      {stars === 0 && [...Array(bars)].map((_, index) => <path key={`b-${index}`} d={`M16 ${18 + index * 8} 32 ${26 + index * 8} 48 ${18 + index * 8}v6L32 ${32 + index * 8} 16 ${24 + index * 8}Z`} />)}
+    </svg>
+  );
+}
+
+function MemberCard({ member, onOpen }: { member: Member; onOpen: (member: Member) => void }) {
+  return (
+    <button className="wg-member-card wg-glass" type="button" onClick={() => onOpen(member)} aria-label={`Abrir ficha de ${member.nick}`}>
+      <div className="wg-card-corners" aria-hidden="true" />
+      <div className="wg-avatar-frame"><Grin /><span>{member.nick.slice(0, 2)}</span></div>
+      <div className="wg-member-status"><i className={member.online ? 'online' : ''} /> {member.online ? 'ONLINE' : 'OFFLINE'}</div>
+      <div className="wg-member-main"><span className="wg-member-role">{member.role}</span><h3>{member.nick}</h3><p>{member.function} · {member.weapon}</p></div>
+      <div className="wg-member-meta"><span><RankInsignia rank={member.rank} />{member.rank}</span><b>{member.id}</b></div>
+    </button>
+  );
 }
 
 function WickedGrinPage() {
-  const [scrolled, setScrolled] = useState(false);
   const [menu, setMenu] = useState(false);
+  const [active, setActive] = useState('inicio');
+  const [query, setQuery] = useState('');
+  const [rank, setRank] = useState('Todos');
   const [role, setRole] = useState('Todos');
-  const [onlineOnly, setOnlineOnly] = useState(false);
-  const [sort, setSort] = useState<{ key: SortKey; asc: boolean }>({ key: 'kd', asc: false });
+  const [selected, setSelected] = useState<Member | null>(null);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 36);
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    const sections = nav.map(([id]) => document.getElementById(id)).filter(Boolean) as HTMLElement[];
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (visible?.target.id) setActive(visible.target.id);
+    }, { rootMargin: '-25% 0px -55%', threshold: [0.1, 0.35, 0.6] });
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
   }, []);
 
-  const roster = useMemo(
-    () => members.filter((m) => (role === 'Todos' || m.role === role) && (!onlineOnly || m.online)),
-    [role, onlineOnly],
-  );
+  useEffect(() => {
+    if (!selected) return;
+    const onKey = (event: KeyboardEvent) => event.key === 'Escape' && setSelected(null);
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [selected]);
 
-  const ranking = useMemo(() => sortRanking(sort.key, sort.asc), [sort]);
-  const toggleSort = (key: SortKey) => setSort((old) => ({ key, asc: old.key === key ? !old.asc : key === 'nick' }));
+  const ranks = useMemo(() => ['Todos', ...Array.from(new Set(members.map((member) => member.rank)))], []);
+  const functions = useMemo(() => ['Todos', ...Array.from(new Set(members.map((member) => member.function)))], []);
+  const filtered = useMemo(() => members.filter((member) => {
+    const matchesQuery = member.nick.toLowerCase().includes(query.trim().toLowerCase());
+    return matchesQuery && (rank === 'Todos' || member.rank === rank) && (role === 'Todos' || member.function === role);
+  }), [query, rank, role]);
 
   return (
     <div className="wg-site">
       <a href="#sobre" className="wg-skip">Ir para o conteúdo</a>
 
-      <section id="inicio" className="wg-hero" aria-label="Banner oficial WICKED GRIN">
-        <img
-          src={wickedBanner}
-          className="wg-hero-art"
-          alt="Banner oficial Wicked Grin criado pelo clã, com operador mascarado em estética cyberpunk"
-          width={1280}
-          height={720}
-          fetchPriority="high"
-        />
+      <section id="inicio" className="wg-hero" aria-label="Início WICKED GRIN">
+        <img src={wickedBanner} className="wg-hero-art" alt="Arte oficial WICKED GRIN com personagem mascarado e lettering do clã" width={1672} height={941} fetchPriority="high" />
         <div className="wg-hero-vignette" aria-hidden="true" />
-        <div className="wg-hero-noise" aria-hidden="true" />
+        <div className="wg-tactical-grid" aria-hidden="true" />
 
-        <header className={`wg-nav wg-glass ${scrolled ? 'is-scrolled' : ''}`}>
-          <a href="#inicio" className="wg-brand" aria-label="Wicked Grin — início">
-            <Grin />
-            <span><b>WICKED</b> <strong>GRIN</strong><small>COMBAT ARMS CLAN</small></span>
-          </a>
+        <header className="wg-nav wg-glass">
+          <a href="#inicio" className="wg-brand" aria-label="Wicked Grin — início"><Grin /><span><b>WICKED</b><strong>GRIN</strong><small>TACTICAL UNIT</small></span></a>
           <nav className={menu ? 'is-open' : ''} aria-label="Navegação principal">
-            {nav.map(([id, label]) => <a key={id} href={`#${id}`} onClick={() => setMenu(false)}>{label}</a>)}
+            {nav.map(([id, label]) => <a key={id} className={active === id ? 'active' : ''} href={`#${id}`} onClick={() => setMenu(false)}>{label}</a>)}
           </nav>
-          <a href="#recrutamento" className="wg-join">JUNTE-SE <TacticalIcon kind="arrow" /></a>
-          <button className="wg-menu" type="button" onClick={() => setMenu((v) => !v)} aria-expanded={menu} aria-label={menu ? 'Fechar menu' : 'Abrir menu'}>
-            {menu ? <TacticalIcon kind="cross" /> : <span>☰</span>}
-          </button>
+          <a href="#recrutamento" className="wg-btn wg-btn-critical wg-nav-cta">Recrutamento</a>
+          <button className="wg-menu" type="button" aria-expanded={menu} aria-label={menu ? 'Fechar menu' : 'Abrir menu'} onClick={() => setMenu((value) => !value)}><span /><span /><span /></button>
         </header>
 
-        <aside className="wg-rail" aria-label="Atalhos">
-          <span className="wg-rail-grid">••<br/>••</span>
-          <i />
-          <a href="#comunidade" aria-label="Comunidade"><TacticalIcon kind="signal" /></a>
-          <a href="#recrutamento" aria-label="Recrutamento"><TacticalIcon kind="target" /></a>
-          <span className="wg-rail-word">FOLLOW US</span>
-          <i />
-          <span className="wg-rail-scroll">SCROLL<br/>DOWN</span>
-        </aside>
-
-        <div className="wg-live-card wg-glass">
-          <span><i /> RECRUTAMENTO ABERTO</span>
-          <small>WG // ACTIVE UNIT</small>
+        <div className="wg-hero-copy">
+          <span className="wg-eyebrow">WICKED GRIN // COMBAT ARMS</span>
+          <h1>SORRIMOS ANTES<br />DO PRIMEIRO TIRO.</h1>
+          <p>Precisão na mira. Lealdade no sangue. Ego do lado de fora.</p>
+          <div className="wg-hero-actions"><a href="#recrutamento" className="wg-btn wg-btn-critical">Entrar no clã <TacticalIcon kind="arrow" /></a><a href="#membros" className="wg-btn wg-btn-secondary">Ver membros</a></div>
         </div>
 
-        <div className="wg-mobile-copy wg-glass">
-          <span>WICKED GRIN // COMBAT ARMS</span>
-          <h1>SORRIMOS ANTES DO PRIMEIRO TIRO.</h1>
-          <p>Precisão na mira. Lealdade no sangue. Caos controlado.</p>
-          <div>
-            <a href="#recrutamento" className="wg-primary">ENTRAR NO CLÃ <TacticalIcon kind="arrow" /></a>
-            <a href="#sobre" className="wg-ghost">EXPLORAR</a>
-          </div>
-        </div>
-
-        <div className="wg-bottom-hud wg-glass">
-          <div className="wg-orb"><span>WG</span></div>
-          <div className="wg-hud-stat"><small>OPERADORES</small><b>+12</b><span>ESQUADRÃO ATIVO</span></div>
-          <div className="wg-hud-stat"><small>K/D MÉDIO</small><b>2.15</b><span>DADOS DEMO</span></div>
-          <div className="wg-hud-stat"><small>OPERAÇÕES</small><b>+240</b><span>HISTÓRICO DEMO</span></div>
-          <div className="wg-hud-stat"><small>STATUS</small><b>ON</b><span>RECRUTAMENTO</span></div>
-          <a href="#sobre" className="wg-hud-arrow" aria-label="Avançar para quem somos"><TacticalIcon kind="arrow" /></a>
-        </div>
+        <div className="wg-hero-stats wg-glass"><div><strong>12</strong><span>membros ativos</span></div><div><strong>87%</strong><span>vitórias demo</span></div><div><strong>4+</strong><span>anos de operação</span></div><small>// DADOS EDITÁVEIS</small></div>
       </section>
 
       <main>
         <section id="sobre" className="wg-section wg-shell">
-          <SectionHead n="01" kicker="QUEM SOMOS" title="SOMOS O SORRISO" accent="NO ESCURO." />
-          <div className="wg-about-grid">
-            <article className="wg-manifesto">
-              <h3>Não pedimos permissão para entrar na sala.</h3>
-              <p>O WICKED GRIN joga com cabeça fria, call limpa e pressão constante. Ninguém carrega o nome do clã sozinho: cada avanço depende do flanco, cada clutch começa na confiança e cada derrota vira treino.</p>
-              <p>Nosso humor é ácido. Nossa disciplina, séria. E nossa melhor propaganda continua sendo o placar.</p>
-              <strong>“Aqui, o sorriso é a última coisa que você vê.”</strong>
-            </article>
-            <div className="wg-about-mark wg-glass"><Grin /><span>FEAR THE GRIN</span></div>
-            <div className="wg-number-card wg-glass"><b>12+</b><span>OPERADORES</span><small>efetivo demonstrativo</small></div>
-            <div className="wg-number-card wg-glass"><b>87%</b><span>WIN RATE</span><small>estatística demonstrativa</small></div>
+          <SectionHead n="01" kicker="SOBRE O CLÃ" title="DISCIPLINA PARA VENCER. HUMOR PARA SOBREVIVER." />
+          <div className="wg-about wg-glass">
+            <article><p>WICKED GRIN é um clã para quem entende que mira boa sem comunicação vira highlight perdido. Jogamos com call limpa, pressão coordenada e respeito por quem veste a tag.</p><strong>“O placar fala. A gente só sorri.”</strong></article>
+            <div className="wg-pillars"><div><TacticalIcon kind="target" /><b>PRECISÃO</b><span>Decisão rápida, tiro limpo.</span></div><div><TacticalIcon kind="shield" /><b>LEALDADE</b><span>O time vem antes do ego.</span></div><div><TacticalIcon kind="signal" /><b>COMUNICAÇÃO</b><span>Call curta. Informação útil.</span></div></div>
           </div>
         </section>
 
-        <section id="equipe" className="wg-section wg-band">
+        <section id="membros" className="wg-section wg-section-deep">
           <div className="wg-shell">
-            <SectionHead n="02" kicker="A EQUIPE" title="QUEM SEGURA" accent="A LINHA." />
-            <div className="wg-filters" role="group" aria-label="Filtrar equipe">
-              {['Todos', 'Líder', 'Sub-líder', 'Oficial', 'Membro', 'Recruta'].map((r) => (
-                <button key={r} type="button" className={role === r ? 'active' : ''} onClick={() => setRole(r)}>{r}</button>
-              ))}
-              <label><input type="checkbox" checked={onlineOnly} onChange={(e) => setOnlineOnly(e.target.checked)} /> só online <i /></label>
-            </div>
-            <div className="wg-roster">
-              {roster.map((m, i) => (
-                <article className={`wg-member wg-glass ${i === 0 ? 'leader' : ''}`} key={m.nick}>
-                  <div className="wg-member-top"><span>WG-{String(members.indexOf(m) + 1).padStart(3, '0')}</span><small className={m.online ? 'online' : ''}>{m.online ? '● ONLINE' : '○ OFFLINE'}</small></div>
-                  <div className="wg-member-face"><Grin /><span>{m.nick.slice(0, 2)}</span></div>
-                  <span className="wg-rank">{m.role}</span>
-                  <h3>{m.nick}</h3>
-                  <p>{m.function} · {m.rank}</p>
-                  <footer><span>{m.weapon}</span><b>K/D {m.kd.toFixed(2)}</b></footer>
-                </article>
-              ))}
+            <SectionHead n="02" kicker="MEMBROS DO CLÃ" title="FICHA DE COMBATE" text="Busque, filtre e abra a ficha de cada operador. Os dados ficam centralizados em src/data/clan.ts." />
+            <div className="wg-member-tools wg-glass"><label className="wg-search"><span>BUSCAR OPERADOR</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Digite um nick..." /></label><div className="wg-filter-row"><span>PATENTE</span>{ranks.map((item) => <button key={item} type="button" className={`wg-filter ${rank === item ? 'active' : ''}`} onClick={() => setRank(item)}>{item}</button>)}</div><div className="wg-filter-row"><span>FUNÇÃO</span>{functions.map((item) => <button key={item} type="button" className={`wg-filter ${role === item ? 'active' : ''}`} onClick={() => setRole(item)}>{item}</button>)}</div></div>
+
+            <div className="wg-member-groups">
+              {groups.map((group) => {
+                const groupMembers = filtered.filter((member) => member.hierarchy === group);
+                if (!groupMembers.length) return null;
+                return <section className="wg-member-group" key={group}><header><span>// {group.toUpperCase()}</span><i /></header><div className="wg-member-grid">{groupMembers.map((member) => <MemberCard key={member.id} member={member} onOpen={setSelected} />)}</div></section>;
+              })}
+              {!filtered.length && <p className="wg-empty">Nenhum operador encontrado com esses filtros.</p>}
             </div>
           </div>
         </section>
 
-        <section id="ranking" className="wg-section wg-shell">
-          <SectionHead n="03" kicker="RANKING & DESEMPENHO" title="NÚMEROS NÃO" accent="MENTEM." />
-          <div className="wg-ranking-grid">
-            <div className="wg-table-wrap wg-glass">
-              <table>
-                <caption>Ranking demonstrativo dos operadores</caption>
-                <thead><tr><th>#</th>{([{ key: 'nick', label: 'OPERADOR' }, { key: 'kd', label: 'K/D' }, { key: 'kills', label: 'ABATES' }, { key: 'wins', label: 'VITÓRIAS' }] as const).map((col) => <th key={col.key}><button type="button" onClick={() => toggleSort(col.key)}>{col.label} {sort.key === col.key ? (sort.asc ? '↑' : '↓') : '↕'}</button></th>)}</tr></thead>
-                <tbody>{ranking.map((m, i) => <tr key={m.nick}><td>{String(i + 1).padStart(2, '0')}</td><td><strong>{m.nick}</strong><small>{m.role}</small></td><td>{m.kd.toFixed(2)}</td><td>{m.kills.toLocaleString('pt-BR')}</td><td>{m.wins}</td></tr>)}</tbody>
-              </table>
-            </div>
-            <aside className="wg-performance wg-glass">
-              <span>JOGADOR DO MÊS</span><Grin /><h3>REAPER</h3><p>O primeiro a entrar. O último a cair.</p>
-              <div className="wg-bars">{monthly.map((m) => <div key={m.month} title={`${m.wins} vitórias`}><i style={{ height: `${Math.max(28, m.wins)}px` }} /><span>{m.month}</span></div>)}</div>
-            </aside>
-          </div>
+        <section id="regras" className="wg-section wg-shell">
+          <SectionHead n="03" kicker="REGRAS" title="SEM DISCIPLINA, SEM TAG." />
+          <div className="wg-rules">{conduct.map(([title, body], index) => <details className="wg-glass" key={title}><summary><span>0{index + 1}</span><b>{title}</b><i>+</i></summary><p>{body}</p></details>)}</div>
         </section>
 
-        <section id="operacoes" className="wg-section wg-band">
+        <section id="recrutamento" className="wg-section wg-section-deep">
           <div className="wg-shell">
-            <SectionHead n="04" kicker="OPERAÇÕES" title="PRÓXIMO" accent="ALVO." />
-            <div className="wg-ops">
-              {matches.map((m, i) => (
-                <article className={`wg-op wg-glass ${i === 0 ? 'featured' : ''}`} key={m.id}>
-                  <div><span>{m.id}</span><b className={m.status === 'Derrota' ? 'loss' : ''}>{m.status}</b></div>
-                  <h3>WICKED GRIN <em>VS</em> {m.opponent}</h3>
-                  <p>{m.map} // {m.mode}</p>
-                  <footer><time dateTime={m.date}>{new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'America/Sao_Paulo' }).format(new Date(m.date))}</time>{m.score ? <strong>{m.score}</strong> : <Countdown date={m.date} />}</footer>
-                </article>
-              ))}
-            </div>
+            <SectionHead n="04" kicker="RECRUTAMENTO" title="SE A MIRA É BOA, PROVE. SE O EGO É GRANDE, NEM TENTE." />
+            <div className="wg-recruit-layout"><aside className="wg-requirements"><span className="wg-eyebrow">REQUISITOS MÍNIMOS</span><h3>ANTES DE ENVIAR</h3><ul><li>Comunicação ativa no Discord</li><li>Disponibilidade para treinos</li><li>Jogo limpo, sem atalhos</li><li>Maturidade para receber feedback</li><li>Compromisso com a equipe</li></ul><p>O formulário está em modo demonstração até um backend ser conectado.</p></aside><Recruitment /></div>
           </div>
         </section>
 
-        <section id="galeria" className="wg-section wg-shell">
-          <SectionHead n="05" kicker="GALERIA / HIGHLIGHTS" title="ECOS DO" accent="CAMPO." />
-          <div className="wg-gallery">
-            {[0, 1, 2, 3].map((i) => (
-              <figure key={i} className={`wg-shot shot-${i}`}>
-                <img src={wickedBanner} alt={i === 0 ? 'Recorte da arte oficial do banner Wicked Grin' : ''} loading="lazy" />
-                <figcaption><span>ARQUIVO // 0{i + 1}</span><b>{['ZONA DE IMPACTO', 'OPERADOR WG', 'PROTOCOLO VERMELHO', 'NOITE DE CAÇA'][i]}</b></figcaption>
-              </figure>
-            ))}
-          </div>
-        </section>
-
-        <section id="conduta" className="wg-section wg-band">
-          <div className="wg-shell wg-rules-grid">
-            <div><SectionHead n="06" kicker="CÓDIGO DE CONDUTA" title="SEM HONRA," accent="SEM CLÃ." /><p className="wg-rule-lead">Disciplina não limita a força. Ela dá direção.</p><TacticalIcon kind="shield" /></div>
-            <div className="wg-rules">{conduct.map(([title, body], i) => <details key={title}><summary><span>0{i + 1}</span><b>{title}</b><i>+</i></summary><p>{body}</p></details>)}</div>
-          </div>
-        </section>
-
-        <section id="recrutamento" className="wg-section wg-shell wg-recruit-grid">
-          <div><SectionHead n="07" kicker="RECRUTAMENTO" title="ENTRE NA" accent="LINHA." /><h3>Boa mira abre portas. Lealdade mantém você dentro.</h3><p>O formulário abaixo está em demonstração e não envia dados até um backend ser conectado.</p><ul><li>Jogo limpo, sem cheats ou macros abusivos.</li><li>Comunicação clara no Discord.</li><li>Presença em treinos e disposição para evoluir.</li></ul></div>
-          <Recruitment />
-        </section>
-
-        <section id="comunidade" className="wg-section wg-band">
-          <div className="wg-shell">
-            <SectionHead n="08" kicker="COMUNIDADE" title="FORA DO MAPA." accent="DENTRO DO CLÃ." />
-            <div className="wg-community">
-              <article className="wg-discord wg-glass"><TacticalIcon kind="signal" /><div><span>QUARTEL-GENERAL</span><h3>Discord do esquadrão</h3><p>Calls, treinos, partidas e resenha depois do clutch.</p>{clanConfig.discordInvite ? <a className="wg-primary" href={clanConfig.discordInvite} target="_blank" rel="noreferrer">ENTRAR NO DISCORD</a> : <button disabled>DISCORD A CONFIGURAR</button>}</div></article>
-              <article className="wg-socials wg-glass"><span>REDES DO CLÃ</span>{[['INSTAGRAM', clanConfig.instagram], ['YOUTUBE', clanConfig.youtube]].map(([name, href]) => href ? <a key={name} href={href} target="_blank" rel="noreferrer">{name} ↗</a> : <div key={name}><b>{name}</b><small>NÃO CONFIGURADO</small></div>)}</article>
-            </div>
-          </div>
+        <section id="comunidade" className="wg-section wg-shell">
+          <SectionHead n="05" kicker="COMUNIDADE" title="A SALA FICA ABERTA. A TAG, NÃO." />
+          <div className="wg-community"><article className="wg-discord wg-glass"><TacticalIcon kind="signal" /><div><span className="wg-eyebrow">DISCORD</span><h3>CENTRAL DE OPERAÇÕES</h3><p>Treinos, avisos, resenha e recrutamento. O link real entra aqui quando for configurado.</p></div>{clanConfig.discordInvite ? <a href={clanConfig.discordInvite} className="wg-btn wg-btn-primary" target="_blank" rel="noreferrer">Entrar no Discord</a> : <span className="wg-offline-link">LINK PENDENTE</span>}</article><div className="wg-social-grid">{[['YouTube', clanConfig.youtube], ['Instagram', clanConfig.instagram], ['Twitch', clanConfig.twitch]].map(([name, href]) => href ? <a key={name} className="wg-glass" href={href} target="_blank" rel="noreferrer">{name}<span>↗</span></a> : <div key={name} className="wg-glass is-disabled">{name}<small>pendente</small></div>)}</div></div>
         </section>
       </main>
 
-      <footer className="wg-footer wg-shell">
-        <a href="#inicio" className="wg-brand"><Grin /><span><b>WICKED</b> <strong>GRIN</strong><small>FEAR THE GRIN</small></span></a>
-        <p>Wicked Grin é um clã independente de fãs. Combat Arms é marca de seus respectivos proprietários. Este site não é afiliado nem endossado por eles.</p>
-        <a href="#inicio" aria-label="Voltar ao topo">↑</a>
-      </footer>
+      <footer className="wg-footer"><div className="wg-shell"><div className="wg-footer-brand"><Grin /><span><b>WICKED GRIN</b><small>TACTICAL UNIT</small></span></div><p>Wicked Grin é um clã independente de fãs. Combat Arms é marca de seus respectivos proprietários. Este site não é afiliado nem endossado por eles.</p><span className="wg-hud-label">© {new Date().getFullYear()} WG // BR</span></div></footer>
+
+      {selected && <div className="wg-modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setSelected(null); }}><aside className="wg-member-modal wg-glass" role="dialog" aria-modal="true" aria-labelledby="member-title"><button type="button" className="wg-modal-close" aria-label="Fechar ficha" onClick={() => setSelected(null)}>×</button><div className="wg-modal-header"><div className="wg-avatar-frame large"><Grin /><span>{selected.nick.slice(0, 2)}</span></div><div><span className="wg-eyebrow">{selected.id} // {selected.role}</span><h2 id="member-title">{selected.nick}</h2><p>{selected.function} · {selected.weapon}</p></div></div><dl><div><dt>PATENTE</dt><dd><RankInsignia rank={selected.rank} />{selected.rank}</dd></div><div><dt>STATUS</dt><dd>{selected.online ? 'ONLINE' : 'OFFLINE'}</dd></div><div><dt>ENTRADA</dt><dd>{new Intl.DateTimeFormat('pt-BR').format(new Date(`${selected.joined}T12:00:00`))}</dd></div>{selected.discord && <div><dt>DISCORD</dt><dd>{selected.discord}</dd></div>}</dl><blockquote>{selected.note}</blockquote><div className="wg-dogtag">{selected.id}<small>WICKED GRIN / ACTIVE UNIT</small></div></aside></div>}
     </div>
   );
 }
