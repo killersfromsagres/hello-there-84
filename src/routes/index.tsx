@@ -105,7 +105,17 @@ function WickedGrinPage() {
       <a href="#sobre" className="wg-skip">Ir para o conteúdo</a>
 
       <section id="inicio" className="wg-hero" aria-label="Início WICKED GRIN">
-        <img src={wickedBanner} className="wg-hero-art" alt="Arte oficial WICKED GRIN com personagem mascarado e lettering do clã" width={1672} height={941} fetchPriority="high" />
+        <img
+          src={wickedBanner}
+          className="wg-hero-art"
+          alt="Arte oficial WICKED GRIN com personagem mascarado e lettering do clã"
+          width={1672}
+          height={941}
+          fetchPriority="high"
+          loading="eager"
+          decoding="async"
+          draggable={false}
+        />
         <div className="wg-hero-vignette" aria-hidden="true" />
         <div className="wg-tactical-grid" aria-hidden="true" />
 
@@ -117,15 +127,6 @@ function WickedGrinPage() {
           <a href="#recrutamento" className="wg-btn wg-btn-critical wg-nav-cta">Recrutamento</a>
           <button className="wg-menu" type="button" aria-expanded={menu} aria-label={menu ? 'Fechar menu' : 'Abrir menu'} onClick={() => setMenu((value) => !value)}><span /><span /><span /></button>
         </header>
-
-        <div className="wg-hero-copy">
-          <span className="wg-eyebrow">WICKED GRIN // COMBAT ARMS</span>
-          <h1>SORRIMOS ANTES<br />DO PRIMEIRO TIRO.</h1>
-          <p>Precisão na mira. Lealdade no sangue. Ego do lado de fora.</p>
-          <div className="wg-hero-actions"><a href="#recrutamento" className="wg-btn wg-btn-critical">Entrar no clã <TacticalIcon kind="arrow" /></a><a href="#membros" className="wg-btn wg-btn-secondary">Ver membros</a></div>
-        </div>
-
-        <div className="wg-hero-stats wg-glass"><div><strong>12</strong><span>membros ativos</span></div><div><strong>87%</strong><span>vitórias demo</span></div><div><strong>4+</strong><span>anos de operação</span></div><small>// DADOS EDITÁVEIS</small></div>
       </section>
 
       <main>
