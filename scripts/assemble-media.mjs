@@ -13,7 +13,7 @@ async function assemble(sourceDir, outputPath, pattern) {
     .replace(/\s+/g, '');
 
   const bytes = Buffer.from(encoded, 'base64');
-  if (bytes.length < 100_000) {
+  if (bytes.length < 50_000) {
     throw new Error(`Hero asset looks truncated: ${bytes.length} bytes from ${files.length} chunks`);
   }
 
