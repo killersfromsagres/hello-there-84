@@ -1,36 +1,30 @@
-import { access, mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 
-async function exists(path) {
-  try {
-    await access(path);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-async function assemble(sourceDir, outputPath) {
-  if (await exists(outputPath)) {
-    console.log(`[media] ${outputPath}: ready`);
-    return;
-  }
-
-  if (!(await exists(sourceDir))) {
-    throw new Error(`Missing media asset: ${outputPath}`);
-  }
-
+async function assemble(sourceDir, outputPath, pattern) {
   const files = (await readdir(sourceDir))
-    .filter((name) => /^part\d+\.b64$/.test(name))
+    .filter((name) => pattern.test(name))
     .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
 
   if (!files.length) throw new Error(`No media chunks found in ${sourceDir}`);
 
-  const encoded = (await Promise.all(files.map((name) => readFile(join(sourceDir, name), 'utf8')))).join('');
-  const bytes = Buffer.from(encoded.replace(/\s+/g, ''), 'base64');
+  const encoded = (await Promise.all(files.map((name) => readFile(join(sourceDir, name), 'utf8'))))
+    .join('')
+    .replace(/\s+/g, '');
+
+  const bytes = Buffer.from(encoded, 'base64');
+  if (bytes.length < 100_000) {
+    throw new Error(`Hero asset looks truncated: ${bytes.length} bytes from ${files.length} chunks`);
+  }
+
+  const isWebP = bytes.subarray(0, 4).toString('ascii') === 'RIFF' && bytes.subarray(8, 12).toString('ascii') === 'WEBP';
+  if (!isWebP) throw new Error('Hero asset is not a valid WebP file');
+
   await mkdir(dirname(outputPath), { recursive: true });
   await writeFile(outputPath, bytes);
   console.log(`[media] ${outputPath}: ${bytes.length.toLocaleString()} bytes from ${files.length} chunk(s)`);
 }
 
-await assemble('media-src/hero', 'public/assets/wicked-grin-hero-4k.avif');
+// Always regenerate the hero from the complete source chunks. This prevents a stale,
+// partial or corrupted file in /public from being treated as valid by the build.
+await assemble('src/assets/banner-hd', 'public/assets/wicked-grin-hero.webp', /^part\d+\.txt$/);
