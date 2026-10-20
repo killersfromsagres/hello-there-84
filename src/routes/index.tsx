@@ -2,6 +2,7 @@ import { createFileRoute, Link } from '@tanstack/react-router';
 import { useState } from 'react';
 import { ArrowRight, Crosshair, X } from 'lucide-react';
 import { SiteShell } from '@/components/wg/SiteShell';
+import { OperatorSpotlight } from '@/components/wg/OperatorSpotlight';
 import { CTA, Counter, GlassCard, Marquee, MemberCard, PillarCard, SectionTitle } from '@/components/wg/UI';
 import { clanStats, members, news } from '@/data/wicked-v3';
 
@@ -57,7 +58,10 @@ function HomePage() {
 
       <section className="wg3-section wg3-shell">
         <SectionTitle code="02" eyebrow="ELENCO" title="OPERADORES EM DESTAQUE" text="Conheça quem carrega a tag Wicked Grin no campo de batalha." />
-        <div className="wg3-member-grid">{members.filter((m) => m.featured).map((member) => <MemberCard key={member.id} member={member} />)}</div>
+        <div className="wg3-featured-layout">
+          <OperatorSpotlight nick="Zangadao SBC" image="/assets/operators/zangadao-sbc.webp" imageWidth={840} imageHeight={1120} />
+          <div className="wg3-member-grid">{members.filter((m) => m.featured).map((member) => <MemberCard key={member.id} member={member} />)}</div>
+        </div>
         <div className="wg3-section-action"><Link to="/elenco" className="ghost-btn">ABRIR ELENCO COMPLETO <ArrowRight /></Link></div>
       </section>
 

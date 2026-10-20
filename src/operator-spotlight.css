@@ -1,0 +1,64 @@
+/* Card 3D do operador em destaque (home › OPERADORES EM DESTAQUE). */
+.wg3-featured-layout{display:grid;grid-template-columns:minmax(300px,390px) minmax(0,1fr);gap:16px;align-items:stretch}
+.wg3-featured-layout>.wg3-member-grid{align-content:stretch}
+
+.wg3-op-stage{display:flex;perspective:1200px;perspective-origin:50% 40%}
+
+.wg3-op-card{
+  --rx:0deg;--ry:0deg;--mx:50%;--my:40%;
+  position:relative;flex:1;display:flex;flex-direction:column;min-height:540px;
+  border:1px solid rgba(57,255,20,.34);border-radius:4px;background:#030604;
+  transform:rotateX(var(--rx)) rotateY(var(--ry));transform-style:preserve-3d;will-change:transform;
+  transition:transform .7s cubic-bezier(.2,.8,.2,1),box-shadow .4s ease,border-color .4s ease;
+  box-shadow:0 26px 60px rgba(0,0,0,.55),0 0 38px rgba(57,255,20,.1),inset 0 1px rgba(255,255,255,.08);
+}
+.wg3-op-card.is-active{transition:transform .12s ease-out,box-shadow .4s ease,border-color .4s ease;border-color:rgba(57,255,20,.62);box-shadow:0 38px 80px rgba(0,0,0,.62),0 0 56px rgba(57,255,20,.2),inset 0 1px rgba(255,255,255,.12)}
+
+/* Fundo: lua verde + malha tática, como a arte do banner. */
+.wg3-op-plate{position:absolute;inset:0;border-radius:inherit;overflow:hidden;
+  background:
+    radial-gradient(circle at 50% 40%,rgba(57,255,20,.3),rgba(57,255,20,.07) 42%,transparent 66%),
+    repeating-linear-gradient(0deg,rgba(57,255,20,.045) 0 1px,transparent 1px 34px),
+    repeating-linear-gradient(90deg,rgba(57,255,20,.045) 0 1px,transparent 1px 34px),
+    linear-gradient(160deg,#12261a,#030604 78%);
+}
+.wg3-op-plate:before{content:"";position:absolute;left:50%;top:41%;width:88%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;
+  border:1px solid rgba(57,255,20,.28);box-shadow:0 0 60px rgba(57,255,20,.22),inset 0 0 70px rgba(57,255,20,.16)}
+.wg3-op-plate:after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 100%,rgba(0,0,0,.7),transparent 55%)}
+
+.wg3-op-glare{position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .35s ease;mix-blend-mode:screen;
+  background:radial-gradient(circle at var(--mx) var(--my),rgba(200,255,170,.3),rgba(57,255,20,.1) 32%,transparent 58%);transform:translateZ(2px)}
+.wg3-op-card.is-active .wg3-op-glare{opacity:1}
+
+.wg3-op-card .hud-corner{transform:translateZ(30px)}
+.wg3-op-tag{position:absolute;left:22px;top:20px;z-index:3;transform:translateZ(40px);letter-spacing:.22em}
+
+/* Personagem: camada mais próxima de quem olha. */
+.wg3-op-figure{position:relative;z-index:2;flex:1;min-height:430px;margin:0;transform:translateZ(85px);animation:wg3-op-float 6s ease-in-out infinite}
+.wg3-op-figure img{position:absolute;left:50%;bottom:0;height:calc(100% - 38px);width:auto;max-width:96%;object-fit:contain;transform:translateX(-50%);
+  user-select:none;-webkit-user-drag:none;
+  filter:drop-shadow(0 26px 22px rgba(0,0,0,.62)) drop-shadow(0 0 24px rgba(57,255,20,.2))}
+
+/* Placa com o nick. Fica abaixo do personagem, sem sobreposição. */
+.wg3-op-nameplate{position:relative;z-index:3;padding:15px 20px 22px;text-align:center;transform:translateZ(55px);
+  border-top:1px solid rgba(57,255,20,.26);background:linear-gradient(180deg,rgba(6,14,8,.92),rgba(3,6,4,.96))}
+.wg3-op-line{display:block;width:56px;height:2px;margin:0 auto 11px;background:linear-gradient(90deg,transparent,var(--wg3-neon),transparent);box-shadow:0 0 12px var(--wg3-neon)}
+.wg3-op-nameplate h3{margin:0;font-family:'Black Ops One','Saira Stencil One',Impact,sans-serif;font-size:clamp(1.55rem,2.5vw,2.15rem);font-weight:400;line-height:1;
+  text-transform:uppercase;letter-spacing:.05em;color:var(--wg3-bone);text-shadow:0 0 22px rgba(57,255,20,.5),0 2px 0 rgba(0,0,0,.6)}
+
+@keyframes wg3-op-float{0%,100%{transform:translateZ(85px) translateY(0)}50%{transform:translateZ(85px) translateY(-7px)}}
+@keyframes wg3-op-sway{0%,100%{transform:rotateX(2deg) rotateY(-7deg)}50%{transform:rotateX(-1deg) rotateY(7deg)}}
+
+/* Telas de toque não têm ponteiro para inclinar: o cartão balança sozinho. */
+@media(hover:none){.wg3-op-card{animation:wg3-op-sway 8s ease-in-out infinite}}
+
+@media(max-width:1100px){
+  .wg3-featured-layout{grid-template-columns:1fr}
+  .wg3-op-stage{width:100%;max-width:440px;margin-inline:auto}
+}
+@media(max-width:650px){.wg3-op-card{min-height:500px}.wg3-op-figure{min-height:390px}}
+
+@media(prefers-reduced-motion:reduce){
+  .wg3-op-card,.wg3-op-figure{animation:none!important;transition:none!important}
+  .wg3-op-card{transform:none}
+}

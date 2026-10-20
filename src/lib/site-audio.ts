@@ -2,14 +2,12 @@ const TRACK_URL = 'https://soundcloud.com/caspaofficial/caspa-rusko-custard-chuc
 const STORAGE_KEY = 'wg-audio-muted';
 const PLAYER_ID = 'wg-background-audio';
 const SDK_ID = 'wg-soundcloud-sdk';
-const VOLUME = 35;
-const MIN_VALID_FINISH_MS = 180_000;
+// Volume do SoundCloud Widget: escala de 0 a 100. A música de fundo toca a 20%.
+const VOLUME = 20;
 const SDK_TIMEOUT_MS = 8_000;
 
-type SoundCloudProgress = { currentPosition?: number };
-
 type SoundCloudWidget = {
-  bind: (event: string, handler: (data?: SoundCloudProgress) => void) => void;
+  bind: (event: string, handler: () => void) => void;
   play: () => void;
   seekTo: (milliseconds: number) => void;
   setVolume: (volume: number) => void;
@@ -17,7 +15,7 @@ type SoundCloudWidget = {
 
 type SoundCloudApi = {
   Widget: ((iframe: HTMLIFrameElement) => SoundCloudWidget) & {
-    Events: { READY: string; FINISH: string; PLAY_PROGRESS: string };
+    Events: { READY: string; PLAY: string; FINISH: string };
   };
 };
 
@@ -33,8 +31,13 @@ let requestedStart = false;
 let mutedState = false;
 let sdkPromise: Promise<void> | null = null;
 let widgetPromise: Promise<SoundCloudWidget | null> | null = null;
-let lastPositionMs = 0;
 let restarting = false;
+
+// O SoundCloud pode voltar ao volume padrão quando a faixa reinicia, então o volume
+// é reaplicado sempre que a música começa, termina ou é retomada.
+function applyVolume() {
+  widget?.setVolume(mutedState ? 0 : VOLUME);
+}
 
 function readStoredMuted() {
   try {
@@ -128,34 +131,23 @@ function ensureWidget() {
 
     widget.bind(events.READY, () => {
       ready = true;
-      widget?.setVolume(mutedState ? 0 : VOLUME);
+      applyVolume();
       if (requestedStart) widget?.play();
     });
 
-    widget.bind(events.PLAY_PROGRESS, (data) => {
-      const position = Number(data?.currentPosition ?? 0);
-      if (Number.isFinite(position) && position >= 0) lastPositionMs = position;
-    });
+    widget.bind(events.PLAY, applyVolume);
 
+    // Loop infinito: quando a faixa termina, volta ao início e toca de novo.
     widget.bind(events.FINISH, () => {
       if (restarting) return;
-
-      if (lastPositionMs < MIN_VALID_FINISH_MS) {
-        window.setTimeout(() => {
-          widget?.setVolume(mutedState ? 0 : VOLUME);
-          if (requestedStart) widget?.play();
-        }, 350);
-        return;
-      }
-
       restarting = true;
-      lastPositionMs = 0;
       widget?.seekTo(0);
-      widget?.setVolume(mutedState ? 0 : VOLUME);
+      applyVolume();
       window.setTimeout(() => {
-        widget?.play();
+        if (requestedStart) widget?.play();
+        applyVolume();
         restarting = false;
-      }, 180);
+      }, 250);
     });
 
     return widget;
@@ -180,7 +172,7 @@ export function setSiteAudioMuted(muted: boolean) {
   // Do not create a SoundCloud iframe/network request just because the preference
   // changed. If the player is already active, update it immediately.
   if (widget) {
-    widget.setVolume(muted ? 0 : VOLUME);
+    applyVolume();
     if (ready && requestedStart) widget.play();
   }
 }
@@ -199,7 +191,7 @@ export function installSiteAudioUnlock() {
   const unlock = () => {
     requestedStart = true;
     void ensureWidget().then((instance) => {
-      instance?.setVolume(mutedState ? 0 : VOLUME);
+      applyVolume();
       instance?.play();
     }).catch(() => undefined);
     window.removeEventListener('pointerdown', unlock);
