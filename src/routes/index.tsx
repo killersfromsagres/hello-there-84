@@ -4,6 +4,7 @@ import { ArrowRight, Crosshair, X } from 'lucide-react';
 import { SiteShell } from '@/components/wg/SiteShell';
 import { CTA, Counter, GlassCard, Marquee, MemberCard, PillarCard, SectionTitle, VideoCard } from '@/components/wg/UI';
 import { clanStats, members, news } from '@/data/wicked-v3';
+import { wickedBanner } from '@/assets/wicked-banner';
 
 export const Route = createFileRoute('/')({
   component: HomePage,
@@ -22,7 +23,7 @@ function HomePage() {
     <main>
       <section className="wg3-hero">
         <div className="wg3-hero-media" aria-hidden="true">
-          <img src="/assets/wicked-grin-hero.webp" alt="" fetchPriority="high" decoding="async" />
+          <img src={wickedBanner} alt="" fetchPriority="high" decoding="async" />
         </div>
         <div className="wg3-hero-vignette" />
         <div className="wg3-moon-glow" />
