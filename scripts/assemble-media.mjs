@@ -16,4 +16,3 @@ async function assemble(sourceDir, outputPath) {
 }
 
 await assemble('media-src/hero', 'public/assets/wicked-grin-hero-4k.avif');
-await assemble('media-src/audio', 'public/assets/audio/wicked-grin-theme.ogg');
