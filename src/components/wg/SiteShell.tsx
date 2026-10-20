@@ -1,6 +1,6 @@
 import { Link, useRouterState } from '@tanstack/react-router';
 import { Crosshair, Search, Volume2, VolumeX, Menu, X } from 'lucide-react';
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { getStoredMuted, installSiteAudioUnlock, setSiteAudioMuted, startSiteAudio } from '@/lib/site-audio';
 
 const nav = [
@@ -17,25 +17,32 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [muted, setMuted] = useState(() => getStoredMuted());
+  // Keep SSR and the first client render deterministic. The persisted preference is
+  // read after hydration so blocked localStorage can never take down the app shell.
+  const [muted, setMuted] = useState(false);
   const [loaded, setLoaded] = useState(false);
-  const [progress, setProgress] = useState(0);
+  const [progress, setProgress] = useState(8);
+  const spotlightRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const timer = window.setInterval(() => setProgress((value) => Math.min(100, value + Math.ceil(Math.random() * 12))), 65);
-    const done = window.setTimeout(() => { setProgress(100); setLoaded(true); }, 900);
-    return () => { window.clearInterval(timer); window.clearTimeout(done); };
+    // Two updates instead of a 65 ms interval: the old loader forced repeated full
+    // React renders while the browser was already decoding the hero and fonts.
+    const advance = window.setTimeout(() => setProgress(78), 80);
+    const done = window.setTimeout(() => {
+      setProgress(100);
+      setLoaded(true);
+    }, 620);
+    return () => {
+      window.clearTimeout(advance);
+      window.clearTimeout(done);
+    };
   }, []);
 
   useEffect(() => {
+    setMuted(getStoredMuted());
     startSiteAudio();
-    setSiteAudioMuted(muted);
     return installSiteAudioUnlock();
   }, []);
-
-  useEffect(() => {
-    setSiteAudioMuted(muted);
-  }, [muted]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -50,16 +57,39 @@ export function SiteShell({ children }: { children: ReactNode }) {
   }, [pathname]);
 
   useEffect(() => {
-    const root = document.documentElement;
-    const onMove = (event: PointerEvent) => {
-      root.style.setProperty('--cursor-x', `${event.clientX}px`);
-      root.style.setProperty('--cursor-y', `${event.clientY}px`);
+    const spotlight = spotlightRef.current;
+    if (!spotlight || !window.matchMedia?.('(pointer: fine)').matches) return;
+
+    let frame = 0;
+    let x = window.innerWidth / 2;
+    let y = window.innerHeight / 2;
+    const paint = () => {
+      frame = 0;
+      spotlight.style.transform = `translate3d(${Math.round(x - 210)}px, ${Math.round(y - 210)}px, 0)`;
     };
+    const onMove = (event: PointerEvent) => {
+      x = event.clientX;
+      y = event.clientY;
+      if (!frame) frame = window.requestAnimationFrame(paint);
+    };
+
+    paint();
     window.addEventListener('pointermove', onMove, { passive: true });
-    return () => window.removeEventListener('pointermove', onMove);
+    return () => {
+      window.removeEventListener('pointermove', onMove);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
   }, []);
 
   const activeLabel = useMemo(() => nav.find(([to]) => to === pathname)?.[1] ?? 'OPERAÇÃO', [pathname]);
+
+  const toggleAudio = () => {
+    setMuted((value) => {
+      const next = !value;
+      setSiteAudioMuted(next);
+      return next;
+    });
+  };
 
   return (
     <div className="wg3-site">
@@ -71,7 +101,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
       </div>
 
       <div className="wg3-cursor" aria-hidden="true"><Crosshair /></div>
-      <div className="wg3-spotlight" aria-hidden="true" />
+      <div ref={spotlightRef} className="wg3-spotlight" aria-hidden="true" />
       <div className="wg3-noise" aria-hidden="true" />
 
       <header className={`wg3-header glass ${scrolled ? 'is-scrolled' : ''}`}>
@@ -93,7 +123,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
             aria-pressed={muted}
             aria-label={muted ? 'Ativar música' : 'Mutar música'}
             title={muted ? 'Ativar música' : 'Mutar música'}
-            onClick={() => setMuted((value) => !value)}
+            onClick={toggleAudio}
           >
             {muted ? <VolumeX /> : <Volume2 />}
           </button>
