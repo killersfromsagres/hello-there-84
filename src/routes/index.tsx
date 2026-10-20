@@ -1,10 +1,9 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ArrowRight, Crosshair, X } from 'lucide-react';
 import { SiteShell } from '@/components/wg/SiteShell';
 import { CTA, Counter, GlassCard, Marquee, MemberCard, PillarCard, SectionTitle, VideoCard } from '@/components/wg/UI';
 import { clanStats, members, news } from '@/data/wicked-v3';
-import { createWickedBannerObjectUrl } from '@/assets/wicked-banner-runtime';
 
 export const Route = createFileRoute('/')({
   component: HomePage,
@@ -13,26 +12,17 @@ export const Route = createFileRoute('/')({
     { name: 'description', content: 'Wicked Grin: clã de Combat Arms. Unidos pela habilidade, movidos pela paixão.' },
     { property: 'og:title', content: 'Wicked Grin — Mais que um clã.' },
     { property: 'og:description', content: 'Trabalho em equipe, disciplina e a busca incansável pela grandeza.' },
+    { property: 'og:image', content: '/assets/wicked-grin-hero-4k.avif' },
   ] }),
 });
 
 function HomePage() {
   const [video, setVideo] = useState(false);
-  const [bannerUrl, setBannerUrl] = useState('');
-
-  useEffect(() => {
-    const objectUrl = createWickedBannerObjectUrl();
-    setBannerUrl(objectUrl);
-    return () => {
-      if (objectUrl) URL.revokeObjectURL(objectUrl);
-    };
-  }, []);
-
   return <SiteShell>
     <main>
       <section className="wg3-hero">
         <div className="wg3-hero-media" aria-hidden="true">
-          {bannerUrl && <img src={bannerUrl} alt="" fetchPriority="high" decoding="sync" />}
+          <img src="/assets/wicked-grin-hero-4k.avif" alt="" fetchPriority="high" decoding="async" />
         </div>
         <div className="wg3-hero-vignette" />
         <div className="wg3-moon-glow" />
