@@ -1,0 +1,33 @@
+/* Cursor visibility hardening.
+   Keeps the native system cursor visible across the site while preserving
+   pointer affordances on interactive controls. */
+html,
+body,
+.wg3-site,
+.wg3-site * {
+  cursor: auto !important;
+}
+
+a,
+button,
+[role="button"],
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+select,
+summary,
+label[for] {
+  cursor: pointer !important;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+input[type="tel"],
+input[type="url"],
+input[type="number"],
+textarea,
+[contenteditable="true"] {
+  cursor: text !important;
+}
