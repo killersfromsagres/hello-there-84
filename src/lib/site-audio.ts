@@ -2,17 +2,22 @@ const TRACK_URL = 'https://soundcloud.com/caspaofficial/caspa-rusko-custard-chuc
 const STORAGE_KEY = 'wg-audio-muted';
 const PLAYER_ID = 'wg-background-audio';
 const SDK_ID = 'wg-soundcloud-sdk';
-const VOLUME = 45;
+const VOLUME = 35;
+const MIN_VALID_FINISH_MS = 180_000;
+
+type SoundCloudProgress = { currentPosition?: number };
 
 type SoundCloudWidget = {
-  bind: (event: string, handler: () => void) => void;
+  bind: (event: string, handler: (data?: SoundCloudProgress) => void) => void;
   play: () => void;
   seekTo: (milliseconds: number) => void;
   setVolume: (volume: number) => void;
 };
 
 type SoundCloudApi = {
-  Widget: ((iframe: HTMLIFrameElement) => SoundCloudWidget) & { Events: { READY: string; FINISH: string } };
+  Widget: ((iframe: HTMLIFrameElement) => SoundCloudWidget) & {
+    Events: { READY: string; FINISH: string; PLAY_PROGRESS: string };
+  };
 };
 
 declare global {
@@ -26,6 +31,8 @@ let ready = false;
 let requestedStart = false;
 let mutedState = false;
 let sdkPromise: Promise<void> | null = null;
+let lastPositionMs = 0;
+let restarting = false;
 
 function ensureIframe() {
   let iframe = document.getElementById(PLAYER_ID) as HTMLIFrameElement | null;
@@ -43,7 +50,7 @@ function ensureIframe() {
   iframe.style.opacity = '0';
   iframe.style.pointerEvents = 'none';
   iframe.style.left = '-9999px';
-  iframe.src = `https://w.soundcloud.com/player/?url=${encodeURIComponent(TRACK_URL)}&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&visual=false`;
+  iframe.src = `https://w.soundcloud.com/player/?url=${encodeURIComponent(TRACK_URL)}&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&visual=false`;
   document.body.appendChild(iframe);
   return iframe;
 }
@@ -82,17 +89,41 @@ async function ensureWidget() {
 
   widget = window.SC.Widget(iframe);
   const events = window.SC.Widget.Events;
+
   widget.bind(events.READY, () => {
     ready = true;
     widget?.setVolume(mutedState ? 0 : VOLUME);
     if (requestedStart) widget?.play();
   });
+
+  widget.bind(events.PLAY_PROGRESS, (data) => {
+    const position = Number(data?.currentPosition ?? 0);
+    if (Number.isFinite(position) && position >= 0) lastPositionMs = position;
+  });
+
   widget.bind(events.FINISH, () => {
-    // Recomeça a faixa completa sem recriar o player ou perder o estado de mute.
+    if (restarting) return;
+
+    // O widget pode disparar FINISH durante a inicialização. Só tratamos como fim real
+    // depois que a faixa já avançou por alguns minutos; assim ela não reinicia no começo.
+    if (lastPositionMs < MIN_VALID_FINISH_MS) {
+      window.setTimeout(() => {
+        widget?.setVolume(mutedState ? 0 : VOLUME);
+        if (requestedStart) widget?.play();
+      }, 350);
+      return;
+    }
+
+    restarting = true;
+    lastPositionMs = 0;
     widget?.seekTo(0);
     widget?.setVolume(mutedState ? 0 : VOLUME);
-    widget?.play();
+    window.setTimeout(() => {
+      widget?.play();
+      restarting = false;
+    }, 180);
   });
+
   return widget;
 }
 
@@ -107,8 +138,7 @@ export function setSiteAudioMuted(muted: boolean) {
   window.localStorage.setItem(STORAGE_KEY, muted ? '1' : '0');
   void ensureWidget().then((instance) => {
     instance?.setVolume(muted ? 0 : VOLUME);
-    // Não faz seek ao mutar/desmutar: a música continua do mesmo ponto.
-    if (ready) instance?.play();
+    if (ready && requestedStart) instance?.play();
   }).catch(() => undefined);
 }
 
