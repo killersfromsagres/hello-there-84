@@ -8,6 +8,7 @@ import memberRanksCss from '../member-ranks.css?url';
 import heroAudioCss from '../hero-audio-fix.css?url';
 import operatorSpotlightCss from '../operator-spotlight.css?url';
 import stabilityCss from '../performance-stability.css?url';
+import cursorFixCss from '../cursor-fix.css?url';
 import { reportLovableError } from '../lib/lovable-error-reporting';
 
 function NotFoundComponent() {
@@ -40,6 +41,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: 'stylesheet', href: heroAudioCss },
       { rel: 'stylesheet', href: operatorSpotlightCss },
       { rel: 'stylesheet', href: stabilityCss },
+      { rel: 'stylesheet', href: cursorFixCss },
       { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' },
       { rel: 'preload', href: '/assets/wicked-grin-hero.webp', as: 'image', type: 'image/webp' },
       { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
