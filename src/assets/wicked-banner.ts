@@ -1,4 +1,5 @@
 import '../banner-clean.css';
+import '../glass-professional.css';
 import p0 from './banner/part0.txt?raw';
 import p1 from './banner/part1.txt?raw';
 import p2 from './banner/part2.txt?raw';

@@ -1,0 +1,140 @@
+/* Unified professional glassmorphism system for interactive controls. */
+:root{
+  --wg-glass-surface:rgba(10,15,20,.44);
+  --wg-glass-highlight:rgba(255,255,255,.18);
+  --wg-glass-line:rgba(255,255,255,.14);
+  --wg-glass-shadow:0 18px 48px rgba(0,0,0,.26),inset 0 1px 0 rgba(255,255,255,.12),inset 0 -1px 0 rgba(255,255,255,.035);
+  --wg-glass-shadow-hover:0 22px 58px rgba(0,0,0,.34),0 0 0 1px rgba(255,255,255,.035),inset 0 1px 0 rgba(255,255,255,.16);
+  --wg-glass-blur:18px;
+}
+
+.wg-site :is(.wg-btn,.wg-filter,.wg-menu,.wg-modal-close,.wg-member-card,.wg-search input,.wg-field input,.wg-field select,.wg-field textarea){
+  position:relative;
+  isolation:isolate;
+  border:1px solid var(--wg-glass-line);
+  background:linear-gradient(145deg,rgba(255,255,255,.095),rgba(255,255,255,.035) 36%,rgba(8,13,18,.28)),var(--wg-glass-surface);
+  -webkit-backdrop-filter:blur(var(--wg-glass-blur)) saturate(145%);
+  backdrop-filter:blur(var(--wg-glass-blur)) saturate(145%);
+  box-shadow:var(--wg-glass-shadow);
+  transition:border-color .22s ease,background .22s ease,box-shadow .22s ease,transform .22s ease,filter .22s ease;
+}
+
+.wg-site :is(.wg-btn,.wg-filter,.wg-menu,.wg-modal-close,.wg-member-card)::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  clip-path:inherit;
+  background:linear-gradient(115deg,rgba(255,255,255,.13),transparent 28%,transparent 66%,rgba(255,255,255,.035));
+  opacity:.75;
+}
+
+.wg-site :is(.wg-btn,.wg-filter,.wg-menu,.wg-modal-close,.wg-member-card):hover{
+  border-color:rgba(255,255,255,.26);
+  background:linear-gradient(145deg,rgba(255,255,255,.13),rgba(255,255,255,.045) 42%,rgba(8,13,18,.30)),rgba(12,18,24,.50);
+  box-shadow:var(--wg-glass-shadow-hover);
+}
+
+.wg-site .wg-btn-primary{
+  border-color:rgba(155,255,61,.44);
+  background:linear-gradient(145deg,rgba(198,255,139,.20),rgba(155,255,61,.08) 40%,rgba(8,13,18,.32)),rgba(17,29,17,.46);
+  box-shadow:0 18px 48px rgba(0,0,0,.28),0 0 28px rgba(155,255,61,.10),inset 0 1px rgba(255,255,255,.17);
+}
+.wg-site .wg-btn-primary:hover{
+  border-color:rgba(155,255,61,.72);
+  box-shadow:0 22px 58px rgba(0,0,0,.34),0 0 34px rgba(155,255,61,.18),inset 0 1px rgba(255,255,255,.22);
+}
+.wg-site .wg-btn-critical{
+  border-color:rgba(255,45,75,.48);
+  background:linear-gradient(145deg,rgba(255,118,137,.20),rgba(255,45,75,.085) 42%,rgba(8,13,18,.34)),rgba(35,12,18,.48);
+  box-shadow:0 18px 48px rgba(0,0,0,.30),0 0 30px rgba(255,45,75,.11),inset 0 1px rgba(255,255,255,.16);
+}
+.wg-site .wg-btn-critical:hover{
+  border-color:rgba(255,45,75,.78);
+  box-shadow:0 22px 60px rgba(0,0,0,.36),0 0 38px rgba(255,45,75,.20),inset 0 1px rgba(255,255,255,.22);
+}
+
+.wg-site .wg-btn{overflow:hidden;transform:translateZ(0)}
+.wg-site .wg-btn::before{
+  content:"";
+  position:absolute;
+  top:-35%;bottom:-35%;left:-45%;width:30%;
+  pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent);
+  transform:skewX(-20deg);
+  opacity:0;
+  transition:left .52s ease,opacity .2s ease;
+}
+.wg-site .wg-btn:hover::before{left:120%;opacity:.8}
+.wg-site .wg-btn:active{transform:translateY(1px) scale(.99)}
+.wg-site .wg-btn:disabled{filter:saturate(.5);opacity:.38;box-shadow:none}
+
+.wg-site .wg-filter{min-height:38px;color:#c9d1db;border-color:rgba(255,255,255,.12)}
+.wg-site .wg-filter.active{
+  color:#f6fff0;
+  border-color:rgba(155,255,61,.62);
+  background:linear-gradient(145deg,rgba(181,255,109,.20),rgba(155,255,61,.07) 45%,rgba(9,17,12,.32)),rgba(18,31,18,.48);
+  box-shadow:0 12px 34px rgba(0,0,0,.26),0 0 22px rgba(155,255,61,.15),inset 0 1px rgba(255,255,255,.17);
+}
+
+.wg-site :is(.wg-search input,.wg-field input,.wg-field select,.wg-field textarea){
+  width:100%;min-height:48px;color:#f2f6fb;caret-color:var(--wg-green);outline:none;padding:0 14px;
+  border-color:rgba(255,255,255,.13);
+  background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.025) 46%,rgba(7,12,16,.22)),rgba(7,12,16,.46);
+  box-shadow:0 12px 32px rgba(0,0,0,.18),inset 0 1px rgba(255,255,255,.10),inset 0 -1px rgba(255,255,255,.025);
+}
+.wg-site .wg-field textarea{padding:14px;min-height:150px;resize:vertical}
+.wg-site .wg-field select{
+  appearance:none;-webkit-appearance:none;padding-right:42px;
+  background-image:linear-gradient(45deg,transparent 50%,rgba(236,239,244,.75) 50%),linear-gradient(135deg,rgba(236,239,244,.75) 50%,transparent 50%),linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.025) 46%,rgba(7,12,16,.22));
+  background-position:calc(100% - 18px) 21px,calc(100% - 12px) 21px,0 0;
+  background-size:6px 6px,6px 6px,100% 100%;background-repeat:no-repeat;
+}
+.wg-site .wg-field select option{background:#0d1218;color:#eef3f8}
+.wg-site :is(.wg-search input,.wg-field input,.wg-field select,.wg-field textarea)::placeholder{color:rgba(192,202,214,.48)}
+
+.wg-site :is(.wg-search input,.wg-field input,.wg-field select,.wg-field textarea):focus,
+.wg-site :is(.wg-search input,.wg-field input,.wg-field select,.wg-field textarea):focus-visible{
+  border-color:rgba(155,255,61,.72);
+  background:linear-gradient(145deg,rgba(255,255,255,.105),rgba(155,255,61,.035) 48%,rgba(7,12,16,.25)),rgba(8,15,17,.54);
+  box-shadow:0 16px 40px rgba(0,0,0,.24),0 0 0 1px rgba(155,255,61,.16),0 0 26px rgba(155,255,61,.10),inset 0 1px rgba(255,255,255,.14);
+  outline:none;
+}
+.wg-site :is(.wg-field input,.wg-field select,.wg-field textarea)[aria-invalid="true"]{
+  border-color:rgba(255,45,75,.74);
+  box-shadow:0 14px 36px rgba(0,0,0,.24),0 0 0 1px rgba(255,45,75,.12),0 0 24px rgba(255,45,75,.11),inset 0 1px rgba(255,255,255,.12);
+}
+
+.wg-site .wg-field>span,.wg-site .wg-search>span{
+  display:inline-block;width:max-content;padding:0 7px;margin-left:9px;margin-bottom:-7px;position:relative;z-index:2;
+  color:#aeb8c5;background:linear-gradient(90deg,rgba(7,9,11,.92),rgba(7,9,11,.74));
+  font:600 .56rem 'JetBrains Mono',monospace;letter-spacing:.10em;text-transform:uppercase;
+}
+
+.wg-site .wg-nav,.wg-site .wg-member-tools,.wg-site .wg-recruit-form,.wg-site .wg-recruit-success,.wg-site .wg-member-modal{
+  background:linear-gradient(145deg,rgba(255,255,255,.085),rgba(255,255,255,.024) 42%,rgba(5,9,13,.28)),rgba(8,13,18,.48);
+  border-color:rgba(255,255,255,.14);
+  -webkit-backdrop-filter:blur(20px) saturate(150%);
+  backdrop-filter:blur(20px) saturate(150%);
+  box-shadow:0 22px 70px rgba(0,0,0,.31),inset 0 1px rgba(255,255,255,.13);
+}
+
+.wg-site :is(.wg-btn,.wg-filter,.wg-menu,.wg-modal-close,.wg-member-card):focus-visible{
+  outline:none;border-color:rgba(155,255,61,.82);
+  box-shadow:0 0 0 2px rgba(7,9,11,.86),0 0 0 4px rgba(155,255,61,.66),0 18px 44px rgba(0,0,0,.28);
+}
+
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .wg-site :is(.wg-btn,.wg-filter,.wg-menu,.wg-modal-close,.wg-member-card,.wg-search input,.wg-field input,.wg-field select,.wg-field textarea,.wg-nav,.wg-member-tools,.wg-recruit-form,.wg-recruit-success,.wg-member-modal){background-color:rgba(14,19,24,.94)}
+}
+
+@media (max-width:720px){
+  :root{--wg-glass-blur:12px}
+  .wg-site .wg-nav,.wg-site .wg-member-tools,.wg-site .wg-recruit-form,.wg-site .wg-recruit-success,.wg-site .wg-member-modal{-webkit-backdrop-filter:blur(14px) saturate(135%);backdrop-filter:blur(14px) saturate(135%)}
+  .wg-site :is(.wg-btn,.wg-filter,.wg-search input,.wg-field input,.wg-field select,.wg-field textarea){min-height:46px}
+}
+
+@media (prefers-reduced-transparency:reduce){
+  .wg-site :is(.wg-btn,.wg-filter,.wg-menu,.wg-modal-close,.wg-member-card,.wg-search input,.wg-field input,.wg-field select,.wg-field textarea,.wg-nav,.wg-member-tools,.wg-recruit-form,.wg-recruit-success,.wg-member-modal){-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(13,18,23,.94)}
+}
