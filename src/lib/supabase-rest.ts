@@ -39,3 +39,20 @@ export async function adminList(table: string, token: string) {
   if (!response.ok) throw new Error(`Falha ao carregar ${table}.`);
   return response.json() as Promise<Record<string, unknown>[]>;
 }
+
+export async function adminCreate(table: string, payload: Record<string, unknown>, token: string) {
+  const response = await fetch(`${url}/rest/v1/${table}`, { method: 'POST', headers: { ...headers(token), Prefer: 'return=representation' }, body: JSON.stringify(payload) });
+  if (!response.ok) throw new Error(`Falha ao criar registro em ${table}.`);
+  return response.json() as Promise<Record<string, unknown>[]>;
+}
+
+export async function adminUpdate(table: string, id: string | number, payload: Record<string, unknown>, token: string) {
+  const response = await fetch(`${url}/rest/v1/${table}?id=eq.${encodeURIComponent(String(id))}`, { method: 'PATCH', headers: { ...headers(token), Prefer: 'return=representation' }, body: JSON.stringify(payload) });
+  if (!response.ok) throw new Error(`Falha ao atualizar registro em ${table}.`);
+  return response.json() as Promise<Record<string, unknown>[]>;
+}
+
+export async function adminDelete(table: string, id: string | number, token: string) {
+  const response = await fetch(`${url}/rest/v1/${table}?id=eq.${encodeURIComponent(String(id))}`, { method: 'DELETE', headers: headers(token) });
+  if (!response.ok) throw new Error(`Falha ao excluir registro em ${table}.`);
+}
