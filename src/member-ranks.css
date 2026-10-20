@@ -1,0 +1,79 @@
+/* WICKED GRIN — roster, patent and hero reliability overrides */
+
+/* The previous hero layers used negative z-index values inside an isolated section.
+   That can place the supplied banner behind the section background in some browsers. */
+.wg3-hero{isolation:isolate;background:#020502}
+.wg3-hero-media{z-index:0!important;overflow:hidden}
+.wg3-hero-media img{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 50%;opacity:1!important;visibility:visible!important}
+.wg3-hero-vignette{z-index:1!important;pointer-events:none;background:radial-gradient(ellipse at 63% 44%,transparent 22%,rgba(0,0,0,.04) 52%,rgba(0,0,0,.4) 100%),linear-gradient(90deg,rgba(2,5,2,.7) 0%,rgba(2,5,2,.38) 30%,rgba(2,5,2,.02) 62%,rgba(2,5,2,.08) 100%),linear-gradient(0deg,#050806 0%,rgba(5,8,6,.38) 8%,transparent 22%)}
+.wg3-moon-glow{z-index:2!important;pointer-events:none}
+.wg3-god-rays{z-index:3!important;pointer-events:none}
+.wg3-fog{z-index:4!important;pointer-events:none}
+.wg3-particles{z-index:5!important}
+.wg3-hero-content{z-index:10!important}
+.wg3-hero-hud{z-index:11!important}
+.wg3-hero:after{content:"";position:absolute;z-index:6;left:0;right:0;bottom:-1px;height:19vh;min-height:130px;pointer-events:none;background:linear-gradient(to bottom,transparent 0%,rgba(5,8,6,.08) 27%,rgba(5,8,6,.5) 72%,#050806 100%)}
+
+/* Combat Arms rank sprite. The user supplied artwork is retained as a compact sprite. */
+.wg3-rank-badge{position:relative;display:inline-grid;justify-items:center;gap:8px;min-width:72px;padding:9px 10px;border:1px solid rgba(57,255,20,.2);border-radius:12px;background:linear-gradient(145deg,rgba(57,255,20,.08),rgba(2,8,4,.62));box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 0 24px rgba(57,255,20,.08);-webkit-backdrop-filter:blur(13px) saturate(135%);backdrop-filter:blur(13px) saturate(135%)}
+.wg3-rank-badge.compact{min-width:58px;padding:5px 7px;gap:4px;border-radius:9px}
+.wg3-rank-sprite-window{position:relative;width:60px;height:64px;overflow:hidden;flex:none;filter:drop-shadow(0 0 6px rgba(57,255,20,.46)) drop-shadow(0 7px 12px rgba(0,0,0,.75))}
+.wg3-rank-badge.compact .wg3-rank-sprite-window{width:48px;height:51px}
+.wg3-rank-sprite{position:absolute;left:0;top:0;width:30px;height:32px;background-repeat:no-repeat;background-size:322px 1024px;image-rendering:pixelated;transform:scale(2);transform-origin:0 0}
+.wg3-rank-badge.compact .wg3-rank-sprite{transform:scale(1.6)}
+.wg3-rank-code{font:600 7px/1 Orbitron,monospace;letter-spacing:.12em;color:#a6b4a6;white-space:nowrap}
+
+/* Member cards now prioritize the player's photo and rank insignia. */
+.wg3-member-card{padding:0!important;overflow:hidden;text-align:left;min-height:420px;display:flex!important;flex-direction:column;border-color:rgba(57,255,20,.18)!important;transition:transform .28s cubic-bezier(.2,.8,.2,1),border-color .28s,box-shadow .28s!important}
+.wg3-member-card:hover{transform:translateY(-7px) perspective(900px) rotateX(1.3deg);border-color:rgba(57,255,20,.5)!important;box-shadow:0 22px 60px rgba(0,0,0,.5),0 0 35px rgba(57,255,20,.12),inset 0 1px rgba(255,255,255,.09)!important}
+.wg3-member-visual{position:relative;min-height:260px;overflow:hidden;background:radial-gradient(circle at 50% 35%,rgba(57,255,20,.12),transparent 38%),linear-gradient(155deg,#101a12,#030604 75%)}
+.wg3-member-photo{display:block;width:100%;height:285px;object-fit:cover;object-position:center top;filter:saturate(.94) contrast(1.05);transition:transform .45s ease,filter .45s ease}
+.wg3-member-card:hover .wg3-member-photo{transform:scale(1.035);filter:saturate(1.05) contrast(1.08)}
+.wg3-member-avatar{height:285px!important;min-height:285px!important;border:0!important;border-radius:0!important;background:repeating-linear-gradient(135deg,rgba(57,255,20,.035) 0 1px,transparent 1px 18px),radial-gradient(circle,rgba(57,255,20,.09),transparent 52%)!important}
+.wg3-member-avatar svg{width:50px!important;height:50px!important;color:rgba(57,255,20,.42)!important}
+.wg3-member-avatar span{font:800 48px/1 Orbitron!important;color:rgba(242,244,239,.86)!important}
+.wg3-member-rank-float{position:absolute;left:14px;bottom:13px;z-index:3}
+.wg3-member-rank-float .wg3-rank-badge{background:rgba(3,8,4,.56);border-color:rgba(124,255,58,.35);box-shadow:0 8px 28px rgba(0,0,0,.45),0 0 28px rgba(57,255,20,.1)}
+.wg3-member-status{top:14px!important;right:14px!important;z-index:4!important;padding:7px 10px!important;border-radius:999px;background:rgba(3,8,4,.62);border:1px solid rgba(255,255,255,.08);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.wg3-member-copy{display:flex;flex-direction:column;flex:1;padding:20px 20px 18px}
+.wg3-member-copy h3{margin:8px 0 5px!important;font-size:clamp(1.45rem,2vw,2rem)!important}
+.wg3-member-copy>p{margin:0;color:var(--wg3-steel)}
+.wg3-member-copy footer{margin-top:auto;padding-top:17px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;border-top:1px solid rgba(57,255,20,.13)!important}
+.wg3-member-copy footer>svg{width:18px;color:var(--wg3-neon)}
+.wg3-member-copy footer .wg3-rank-badge{grid-template-columns:auto auto;align-items:center;min-width:0}
+.wg3-member-copy footer .wg3-rank-sprite-window{margin-right:4px}
+
+.wg3-roster-source{display:inline-flex;align-items:center;gap:8px;margin:-22px 0 22px;font:600 8px Orbitron;letter-spacing:.14em;color:#7b887d}
+.wg3-source-dot{width:7px;height:7px;border-radius:50%;background:#697269;box-shadow:0 0 0 4px rgba(105,114,105,.08)}
+.wg3-source-dot.live{background:var(--wg3-neon);box-shadow:0 0 12px rgba(57,255,20,.75),0 0 0 4px rgba(57,255,20,.09)}
+.wg3-roster-tools{display:grid!important;grid-template-columns:minmax(230px,1fr) 2fr 2fr!important;gap:18px!important;align-items:end!important}
+.wg3-roster-tools>div{display:flex!important;align-items:center!important;gap:7px!important;flex-wrap:wrap!important}
+.wg3-roster-tools>div>span,.wg3-roster-tools label>span{width:100%;font:600 8px Orbitron;letter-spacing:.16em;color:#91a092;margin-bottom:3px}
+.wg3-roster-tools button{min-height:34px!important;padding:0 10px!important}
+
+/* Profile modal */
+.wg3-member-profile{width:min(880px,calc(100vw - 34px))!important;display:grid!important;grid-template-columns:minmax(260px,.78fr) 1fr!important;gap:28px!important;padding:22px!important}
+.wg3-profile-visual{position:relative;min-height:430px;border-radius:13px;overflow:hidden;border:1px solid rgba(57,255,20,.18);background:radial-gradient(circle at 50% 32%,rgba(57,255,20,.14),transparent 45%),#050806}
+.wg3-profile-visual>img{width:100%;height:100%;min-height:430px;object-fit:cover;object-position:center top}
+.wg3-profile-fallback{height:100%;min-height:430px;display:grid;place-content:center;justify-items:center;gap:14px;color:#879588}.wg3-profile-fallback svg{width:62px;height:62px;color:var(--wg3-neon)}.wg3-profile-fallback span{font:800 52px Orbitron}
+.wg3-profile-visual>.wg3-rank-badge{position:absolute;left:18px;bottom:18px;background:rgba(2,7,4,.7)}
+.wg3-profile-copy{padding:28px 24px 18px 0}.wg3-profile-copy h2{font:800 clamp(2.8rem,5vw,5.2rem)/.88 Rajdhani,sans-serif;margin:14px 0 28px}.wg3-profile-copy dl{display:grid;grid-template-columns:1fr 1fr;gap:10px}.wg3-profile-copy dl>div{padding:15px;border:1px solid rgba(57,255,20,.13);border-radius:9px;background:rgba(4,10,5,.35)}.wg3-profile-copy dt{font:600 7px Orbitron;letter-spacing:.15em;color:#78867a}.wg3-profile-copy dd{margin:7px 0 0;font:700 14px Rajdhani}.wg3-profile-copy p{color:var(--wg3-steel);line-height:1.65;margin-top:24px}
+
+/* Rank archive */
+.wg3-rank-grid{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))!important}
+.wg3-rank-card{min-height:280px!important;display:flex;flex-direction:column;align-items:center;text-align:center;padding:22px 16px!important}
+.wg3-rank-card .wg3-rank-art{height:102px!important;display:grid;place-items:center!important;margin:15px 0!important}
+.wg3-rank-card .wg3-rank-badge{border:0;background:transparent;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;padding:0}
+.wg3-rank-card h3{font-size:17px!important;margin:4px 0 7px!important}.wg3-rank-card p{min-height:48px;font-size:12px!important;line-height:1.45!important}.wg3-rank-card small{margin-top:auto!important}
+
+/* Professional member editor in admin */
+.wg3-member-admin-layout{display:grid;grid-template-columns:minmax(360px,.9fr) 1.1fr;gap:18px;margin-top:18px}
+.wg3-member-form,.wg3-member-admin-list{padding:24px!important;border-radius:14px}.wg3-member-form h2{font:700 28px Rajdhani;margin:8px 0 20px}.wg3-member-admin-preview{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:end;margin-bottom:20px}.wg3-member-admin-preview>img,.wg3-member-admin-preview>div:first-child{width:100%;height:230px;border-radius:12px;object-fit:cover;object-position:center top;border:1px solid rgba(57,255,20,.18);background:rgba(0,0,0,.25)}.wg3-member-admin-preview>div:first-child{display:grid;place-content:center;justify-items:center;gap:8px;color:#78867a}.wg3-member-admin-preview>div:first-child svg{width:44px;height:44px}.wg3-member-admin-preview>div:first-child span{font:600 8px Orbitron;letter-spacing:.15em}
+.wg3-member-form>label,.wg3-member-form-grid label{display:grid;gap:7px}.wg3-member-form label>span{font:600 8px Orbitron;letter-spacing:.13em;color:#91a092}.wg3-member-form input,.wg3-member-form select{width:100%;min-height:46px;border-radius:9px;border:1px solid rgba(57,255,20,.16);background:rgba(3,9,5,.56);color:#f2f4ef;padding:0 12px;outline:none;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}.wg3-member-form input:focus,.wg3-member-form select:focus{border-color:rgba(57,255,20,.65);box-shadow:0 0 0 3px rgba(57,255,20,.08),0 0 22px rgba(57,255,20,.08)}.wg3-member-form input[type=file]{padding:10px;margin:8px 0 16px}.wg3-member-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.wg3-member-switches{display:flex;gap:20px;flex-wrap:wrap;margin:18px 0}.wg3-member-switches label{display:flex;align-items:center;gap:8px;font:600 8px Orbitron;letter-spacing:.1em;color:#aab4aa}.wg3-member-switches input{width:18px!important;min-height:18px!important;accent-color:var(--wg3-neon)}
+.wg3-member-admin-list{max-height:860px;overflow:auto}.wg3-admin-member-row{display:grid!important;grid-template-columns:auto 1fr auto!important;gap:14px!important;align-items:center!important;padding:14px 0!important}.wg3-admin-member-mini{display:flex;align-items:center;gap:8px}.wg3-admin-member-mini>img,.wg3-admin-member-mini>svg{width:54px;height:54px;border-radius:9px;object-fit:cover;border:1px solid rgba(57,255,20,.16);background:#071008;padding:2px}.wg3-admin-member-mini .wg3-rank-badge{transform:scale(.82);transform-origin:left center;margin-right:-8px}.wg3-admin-member-row>div:nth-child(2){display:grid;gap:4px}.wg3-admin-member-row strong{font:700 18px Rajdhani}.wg3-admin-member-row small{color:#869388;font-size:11px}.wg3-admin-row-actions{display:flex;gap:7px}.wg3-admin-row-actions .ghost-btn,.wg3-admin-row-actions .wg3-danger-btn{min-height:38px!important;padding:0 11px!important;font-size:8px!important}
+
+@media(max-width:1050px){.wg3-roster-tools{grid-template-columns:1fr!important}.wg3-member-admin-layout{grid-template-columns:1fr}.wg3-member-profile{grid-template-columns:1fr!important;max-height:90vh;overflow:auto}.wg3-profile-visual{min-height:360px}.wg3-profile-visual>img,.wg3-profile-fallback{min-height:360px}.wg3-profile-copy{padding:0 8px 12px}}
+@media(max-width:650px){.wg3-hero-media img{object-position:67% center}.wg3-member-card{min-height:390px}.wg3-member-photo,.wg3-member-avatar{height:250px!important;min-height:250px!important}.wg3-member-form-grid{grid-template-columns:1fr}.wg3-member-admin-preview{grid-template-columns:1fr}.wg3-admin-member-row{grid-template-columns:auto 1fr!important}.wg3-admin-row-actions{grid-column:1/-1}.wg3-profile-copy dl{grid-template-columns:1fr}.wg3-rank-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+
+@supports not ((backdrop-filter:blur(2px)) or (-webkit-backdrop-filter:blur(2px))){.wg3-rank-badge,.wg3-member-status,.wg3-member-form input,.wg3-member-form select{background:#09110b}}
+@media(prefers-reduced-motion:reduce){.wg3-member-card,.wg3-member-photo{transition:none!important}.wg3-member-card:hover{transform:none!important}}
