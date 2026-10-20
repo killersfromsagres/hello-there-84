@@ -6,6 +6,7 @@ import wickedCss from '../wicked-v3.css?url';
 import adminCss from '../wicked-admin.css?url';
 import memberRanksCss from '../member-ranks.css?url';
 import heroAudioCss from '../hero-audio-fix.css?url';
+import stabilityCss from '../performance-stability.css?url';
 import { reportLovableError } from '../lib/lovable-error-reporting';
 
 function NotFoundComponent() {
@@ -36,7 +37,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: 'stylesheet', href: adminCss },
       { rel: 'stylesheet', href: memberRanksCss },
       { rel: 'stylesheet', href: heroAudioCss },
+      { rel: 'stylesheet', href: stabilityCss },
       { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' },
+      { rel: 'preload', href: '/assets/wicked-grin-hero.webp', as: 'image', type: 'image/webp' },
       { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
       { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous' },
       { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Black+Ops+One&family=Inter:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap' },
