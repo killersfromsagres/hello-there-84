@@ -37,7 +37,9 @@ function HomePage() {
         <div className="wg3-shell wg3-hero-content wg3-hero-content-banner">
           <div className="wg3-hero-banner-panel">
             <span className="wg3-kicker">// CLÃ DE COMBAT ARMS</span>
-            <h1 className="wg3-sr-only">Wicked Grin</h1>
+            <h1 className="wg3-hero-wordmark">
+              <span>Wicked</span> <em>Grin</em>
+            </h1>
             <p><strong>UNIDOS PELA HABILIDADE.</strong><br />MOVIDOS PELA PAIXÃO.</p>
             <div className="wg3-hero-actions">
               <Link to="/contato" className="neon-btn">ALISTAR-SE <ArrowRight /></Link>
