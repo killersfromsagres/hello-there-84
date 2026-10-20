@@ -31,11 +31,6 @@ function HomePage() {
             fetchPriority="high"
             decoding="async"
           />
-          {/* Logotipo sobre a arte: o SVG usa o mesmo enquadramento (meet) da imagem,
-              então o nome escala e acompanha o banner em qualquer tela. */}
-          <svg className="wg3-hero-logo" viewBox="0 0 1672 941" preserveAspectRatio="xMidYMid meet" focusable="false">
-            <image href="/assets/wicked-grin-logo.webp" x="45" y="205" width="830" height="199.6" />
-          </svg>
         </div>
         <div className="wg3-hero-vignette" aria-hidden="true" />
 

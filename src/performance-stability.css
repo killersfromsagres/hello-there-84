@@ -59,3 +59,15 @@
   .wg3-preloader,.wg3-loadbar i,.wg3-icon-btn.wg3-audio-btn.is-playing:after,.neon-btn:before{animation:none!important;transition:none!important}
   .wg3-spotlight{display:none!important}
 }
+
+/* Telas mais largas que 16:9 e com altura confortável (ultrawide, janelas largas): o banner preenche toda a
+   largura em vez de deixar faixas escuras nas laterais. O corte é só em cima/embaixo; nome e personagem ficam inteiros. */
+@media(min-width:901px) and (min-aspect-ratio:16/9) and (min-height:760px){
+  .wg3-hero-banner .wg3-hero-media img{object-fit:cover!important;object-position:center 24%!important}
+}
+/* Janelas largas e baixas: mantém o banner inteiro (o painel não encosta no nome) e esmaece as bordas
+   laterais para não aparecer emenda com o fundo. */
+@media(min-width:901px) and (min-aspect-ratio:16/9) and (max-height:759px){
+  .wg3-hero-banner .wg3-hero-media img{width:auto!important;max-width:100%;margin-inline:auto;aspect-ratio:1672/941;
+    -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+}
