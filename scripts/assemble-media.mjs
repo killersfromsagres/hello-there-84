@@ -1,7 +1,25 @@
-import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
+import { access, mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 
+async function exists(path) {
+  try {
+    await access(path);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 async function assemble(sourceDir, outputPath) {
+  if (await exists(outputPath)) {
+    console.log(`[media] ${outputPath}: ready`);
+    return;
+  }
+
+  if (!(await exists(sourceDir))) {
+    throw new Error(`Missing media asset: ${outputPath}`);
+  }
+
   const files = (await readdir(sourceDir))
     .filter((name) => /^part\d+\.b64$/.test(name))
     .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
