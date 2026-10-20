@@ -1,21 +1,19 @@
+import { combatRanks } from './combat-ranks';
+
 export type Member = {
   id: string;
   nick: string;
   role: string;
   specialty: 'Rifleman' | 'Sniper' | 'Suporte' | 'Entry';
-  rank: string;
+  rankCode: string;
   kd?: string;
   status: 'online' | 'offline';
   featured?: boolean;
+  photoUrl?: string;
+  joinedAt?: string;
 };
 
-export type ClanRank = {
-  id: number;
-  nome: string;
-  nivel: string;
-  imagem: string;
-  descricao: string;
-};
+export type ClanRank = (typeof combatRanks)[number];
 
 export const clanStats = [
   { value: 24, suffix: '+', label: 'Membros ativos' },
@@ -25,23 +23,17 @@ export const clanStats = [
 ];
 
 export const members: Member[] = [
-  { id: 'WG-001', nick: 'REAPER', role: 'Líder', specialty: 'Rifleman', rank: 'A DEFINIR', kd: '2.41', status: 'online', featured: true },
-  { id: 'WG-002', nick: 'GHOST', role: 'Sub-líder', specialty: 'Sniper', rank: 'A DEFINIR', kd: '2.18', status: 'online', featured: true },
-  { id: 'WG-003', nick: 'VIPER', role: 'Oficial', specialty: 'Entry', rank: 'A DEFINIR', kd: '1.96', status: 'offline', featured: true },
-  { id: 'WG-004', nick: 'HAVOC', role: 'Oficial', specialty: 'Suporte', rank: 'A DEFINIR', kd: '1.84', status: 'online' },
-  { id: 'WG-005', nick: 'NYX', role: 'Membro', specialty: 'Sniper', rank: 'A DEFINIR', kd: '1.78', status: 'offline' },
-  { id: 'WG-006', nick: 'BLITZ', role: 'Membro', specialty: 'Entry', rank: 'A DEFINIR', kd: '1.72', status: 'online' },
-  { id: 'WG-007', nick: 'RAVEN', role: 'Membro', specialty: 'Rifleman', rank: 'A DEFINIR', kd: '1.65', status: 'offline' },
-  { id: 'WG-008', nick: 'FANG', role: 'Recruta', specialty: 'Suporte', rank: 'A DEFINIR', kd: '1.44', status: 'online' },
+  { id: 'WG-001', nick: 'REAPER', role: 'Líder', specialty: 'Rifleman', rankCode: 'RANK-076', kd: '2.41', status: 'online', featured: true },
+  { id: 'WG-002', nick: 'GHOST', role: 'Sub-líder', specialty: 'Sniper', rankCode: 'RANK-071', kd: '2.18', status: 'online', featured: true },
+  { id: 'WG-003', nick: 'VIPER', role: 'Oficial', specialty: 'Entry', rankCode: 'RANK-066', kd: '1.96', status: 'offline', featured: true },
+  { id: 'WG-004', nick: 'HAVOC', role: 'Oficial', specialty: 'Suporte', rankCode: 'RANK-061', kd: '1.84', status: 'online' },
+  { id: 'WG-005', nick: 'NYX', role: 'Membro', specialty: 'Sniper', rankCode: 'RANK-050', kd: '1.78', status: 'offline' },
+  { id: 'WG-006', nick: 'BLITZ', role: 'Membro', specialty: 'Entry', rankCode: 'RANK-045', kd: '1.72', status: 'online' },
+  { id: 'WG-007', nick: 'RAVEN', role: 'Membro', specialty: 'Rifleman', rankCode: 'RANK-040', kd: '1.65', status: 'offline' },
+  { id: 'WG-008', nick: 'FANG', role: 'Recruta', specialty: 'Suporte', rankCode: 'RANK-025', kd: '1.44', status: 'online' },
 ];
 
-export const ranks: ClanRank[] = Array.from({ length: 12 }, (_, index) => ({
-  id: index + 1,
-  nome: 'A DEFINIR',
-  nivel: 'A DEFINIR',
-  imagem: `/assets/patentes/patente-${String(index + 1).padStart(2, '0')}.png`,
-  descricao: 'Aguardando o nome, nível e a imagem oficial fornecidos pelo clã.',
-}));
+export const ranks = combatRanks;
 
 export const news = [
   { tag: 'OPERAÇÃO', date: 'A DEFINIR', title: 'Próxima missão do esquadrão', text: 'Calendário oficial será publicado assim que as datas forem confirmadas.' },
