@@ -1,6 +1,7 @@
 import { Link, useRouterState } from '@tanstack/react-router';
 import { Crosshair, Search, Volume2, VolumeX, Menu, X } from 'lucide-react';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { getStoredMuted, installSiteAudioUnlock, setSiteAudioMuted, startSiteAudio } from '@/lib/site-audio';
 
 const nav = [
   ['/', 'INÍCIO'],
@@ -16,7 +17,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [audio, setAudio] = useState(false);
+  const [muted, setMuted] = useState(() => getStoredMuted());
   const [loaded, setLoaded] = useState(false);
   const [progress, setProgress] = useState(0);
 
@@ -25,6 +26,16 @@ export function SiteShell({ children }: { children: ReactNode }) {
     const done = window.setTimeout(() => { setProgress(100); setLoaded(true); }, 900);
     return () => { window.clearInterval(timer); window.clearTimeout(done); };
   }, []);
+
+  useEffect(() => {
+    startSiteAudio();
+    setSiteAudioMuted(muted);
+    return installSiteAudioUnlock();
+  }, []);
+
+  useEffect(() => {
+    setSiteAudioMuted(muted);
+  }, [muted]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -76,7 +87,16 @@ export function SiteShell({ children }: { children: ReactNode }) {
         </nav>
         <div className="wg3-header-actions">
           <button className="wg3-icon-btn" type="button" aria-label="Busca em breve"><Search /></button>
-          <button className="wg3-icon-btn" type="button" aria-label={audio ? 'Desativar sons' : 'Ativar sons'} onClick={() => setAudio((value) => !value)}>{audio ? <Volume2 /> : <VolumeX />}</button>
+          <button
+            className={`wg3-icon-btn wg3-audio-btn ${muted ? 'is-muted' : 'is-playing'}`}
+            type="button"
+            aria-pressed={muted}
+            aria-label={muted ? 'Ativar música' : 'Mutar música'}
+            title={muted ? 'Ativar música' : 'Mutar música'}
+            onClick={() => setMuted((value) => !value)}
+          >
+            {muted ? <VolumeX /> : <Volume2 />}
+          </button>
           <Link to="/contato" className="neon-btn small">ENTRAR NO CLÃ</Link>
           <button className="wg3-menu-btn" type="button" aria-label="Abrir menu" onClick={() => setMenuOpen(true)}><Menu /></button>
         </div>
