@@ -2,7 +2,7 @@ const TRACK_URL = 'https://soundcloud.com/caspaofficial/caspa-rusko-custard-chuc
 const STORAGE_KEY = 'wg-audio-muted';
 const PLAYER_ID = 'wg-background-audio';
 const SDK_ID = 'wg-soundcloud-sdk';
-const VOLUME = 45;
+const VOLUME = 35;
 
 type SoundCloudWidget = {
   bind: (event: string, handler: () => void) => void;
@@ -43,7 +43,7 @@ function ensureIframe() {
   iframe.style.opacity = '0';
   iframe.style.pointerEvents = 'none';
   iframe.style.left = '-9999px';
-  iframe.src = `https://w.soundcloud.com/player/?url=${encodeURIComponent(TRACK_URL)}&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&visual=false`;
+  iframe.src = `https://w.soundcloud.com/player/?url=${encodeURIComponent(TRACK_URL)}&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&visual=false`;
   document.body.appendChild(iframe);
   return iframe;
 }
@@ -55,6 +55,10 @@ function ensureSdk() {
   sdkPromise = new Promise<void>((resolve, reject) => {
     const existing = document.getElementById(SDK_ID) as HTMLScriptElement | null;
     if (existing) {
+      if (window.SC?.Widget) {
+        resolve();
+        return;
+      }
       existing.addEventListener('load', () => resolve(), { once: true });
       existing.addEventListener('error', () => reject(new Error('SoundCloud SDK unavailable')), { once: true });
       return;
@@ -82,17 +86,20 @@ async function ensureWidget() {
 
   widget = window.SC.Widget(iframe);
   const events = window.SC.Widget.Events;
+
   widget.bind(events.READY, () => {
     ready = true;
     widget?.setVolume(mutedState ? 0 : VOLUME);
     if (requestedStart) widget?.play();
   });
+
   widget.bind(events.FINISH, () => {
-    // Recomeça a faixa completa sem recriar o player ou perder o estado de mute.
+    // A faixa inteira termina primeiro; só então volta ao início e continua em loop.
     widget?.seekTo(0);
     widget?.setVolume(mutedState ? 0 : VOLUME);
-    widget?.play();
+    window.setTimeout(() => widget?.play(), 80);
   });
+
   return widget;
 }
 
@@ -107,8 +114,8 @@ export function setSiteAudioMuted(muted: boolean) {
   window.localStorage.setItem(STORAGE_KEY, muted ? '1' : '0');
   void ensureWidget().then((instance) => {
     instance?.setVolume(muted ? 0 : VOLUME);
-    // Não faz seek ao mutar/desmutar: a música continua do mesmo ponto.
-    if (ready) instance?.play();
+    // Mutar só zera o volume: a faixa continua avançando no mesmo ponto.
+    if (ready && requestedStart) instance?.play();
   }).catch(() => undefined);
 }
 
