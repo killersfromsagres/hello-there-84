@@ -1,9 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Crosshair, X } from 'lucide-react';
 import { SiteShell } from '@/components/wg/SiteShell';
 import { MemberCard, RankBadge, SectionTitle } from '@/components/wg/UI';
 import { members, type Member } from '@/data/wicked-v3';
+import { publicMembers, supabaseReady } from '@/lib/supabase-rest';
 
 export const Route = createFileRoute('/elenco')({ component: RosterPage, head: () => ({ meta: [{ title: 'Elenco — Wicked Grin' }, { name: 'description', content: 'Elenco, fotos, funções e patentes dos operadores do clã Wicked Grin.' }] }) });
 
@@ -12,11 +13,26 @@ function RosterPage() {
   const [specialty, setSpecialty] = useState('Todos');
   const [rank, setRank] = useState('Todos');
   const [selected, setSelected] = useState<Member | null>(null);
-  const rankOptions = useMemo(() => ['Todos', ...Array.from(new Set(members.map((member) => member.rankCode)))], []);
-  const filtered = useMemo(() => members.filter((m) => m.nick.toLowerCase().includes(query.toLowerCase()) && (specialty === 'Todos' || m.specialty === specialty) && (rank === 'Todos' || m.rankCode === rank)), [query, specialty, rank]);
+  const [roster, setRoster] = useState<Member[]>(members);
+  const [source, setSource] = useState<'local' | 'database'>('local');
+
+  useEffect(() => {
+    if (!supabaseReady) return;
+    let active = true;
+    void publicMembers().then((loaded) => {
+      if (!active || !loaded.length) return;
+      setRoster(loaded);
+      setSource('database');
+    });
+    return () => { active = false; };
+  }, []);
+
+  const rankOptions = useMemo(() => ['Todos', ...Array.from(new Set(roster.map((member) => member.rankCode)))], [roster]);
+  const filtered = useMemo(() => roster.filter((m) => m.nick.toLowerCase().includes(query.toLowerCase()) && (specialty === 'Todos' || m.specialty === specialty) && (rank === 'Todos' || m.rankCode === rank)), [roster, query, specialty, rank]);
 
   return <SiteShell><main className="wg3-page"><section className="wg3-page-hero"><div className="wg3-shell"><span className="wg3-kicker">ROSTER // OPERADORES</span><h1>ELENCO <em>WICKED</em></h1><p>Cada operador recebe foto, função e insígnia de patente em uma ficha visual única.</p></div></section>
     <section className="wg3-section wg3-shell"><SectionTitle code="01" eyebrow="ROSTER" title="FICHA DE OPERADORES" text="Use o painel de comando para cadastrar a foto do integrante e atribuir uma das patentes fornecidas pelo clã." />
+      <div className="wg3-roster-source"><span className={`wg3-source-dot ${source === 'database' ? 'live' : ''}`} />{source === 'database' ? 'ELENCO SINCRONIZADO COM A BASE' : 'DADOS DEMONSTRATIVOS LOCAIS'}</div>
       <div className="wg3-roster-tools glass"><label><span>BUSCAR NICK</span><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Digite um operador..." /></label><div><span>FUNÇÃO</span>{['Todos','Rifleman','Sniper','Suporte','Entry'].map((item) => <button type="button" key={item} className={specialty === item ? 'active' : ''} onClick={() => setSpecialty(item)}>{item}</button>)}</div><div><span>PATENTE</span>{rankOptions.map((item) => <button type="button" key={item} className={rank === item ? 'active' : ''} onClick={() => setRank(item)}>{item === 'Todos' ? item : item.replace('RANK-', '#')}</button>)}</div></div>
       <div className="wg3-member-grid full">{filtered.map((member) => <MemberCard key={member.id} member={member} onOpen={() => setSelected(member)} />)}</div>
     </section>
