@@ -13,7 +13,7 @@ async function assemble(sourceDir, outputPath, pattern) {
     .replace(/\s+/g, '');
 
   const bytes = Buffer.from(encoded, 'base64');
-  if (bytes.length < 50_000) {
+  if (bytes.length < 100_000) {
     throw new Error(`Hero asset looks truncated: ${bytes.length} bytes from ${files.length} chunks`);
   }
 
@@ -25,6 +25,6 @@ async function assemble(sourceDir, outputPath, pattern) {
   console.log(`[media] ${outputPath}: ${bytes.length.toLocaleString()} bytes from ${files.length} chunk(s)`);
 }
 
-// Always regenerate the hero from the complete source chunks. This prevents a stale,
-// partial or corrupted file in /public from being treated as valid by the build.
-await assemble('src/assets/banner-hd', 'public/assets/wicked-grin-hero.webp', /^part\d+\.txt$/);
+// Rebuild the hero from the exact banner supplied for the site. Keeping the binary
+// generated at build time avoids shipping a multi-megabyte source image in Git.
+await assemble('src/assets/banner-user', 'public/assets/wicked-grin-hero.webp', /^part\d+\.b64$/);
