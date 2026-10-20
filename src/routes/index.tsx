@@ -2,7 +2,7 @@ import { createFileRoute, Link } from '@tanstack/react-router';
 import { useState } from 'react';
 import { ArrowRight, Crosshair, X } from 'lucide-react';
 import { SiteShell } from '@/components/wg/SiteShell';
-import { CTA, Counter, GlassCard, Marquee, MemberCard, PillarCard, SectionTitle, VideoCard } from '@/components/wg/UI';
+import { CTA, Counter, GlassCard, Marquee, MemberCard, PillarCard, SectionTitle } from '@/components/wg/UI';
 import { clanStats, members, news } from '@/data/wicked-v3';
 
 export const Route = createFileRoute('/')({
@@ -20,25 +20,30 @@ function HomePage() {
   const [video, setVideo] = useState(false);
   return <SiteShell>
     <main>
-      <section className="wg3-hero">
+      <section className="wg3-hero wg3-hero-banner">
         <div className="wg3-hero-media" aria-hidden="true">
-          <img src="/assets/wicked-grin-hero.webp" alt="" fetchPriority="high" decoding="async" />
+          <img
+            src="/assets/wicked-grin-hero.webp"
+            alt=""
+            width={1672}
+            height={941}
+            fetchPriority="high"
+            decoding="async"
+          />
         </div>
-        <div className="wg3-hero-vignette" />
-        <div className="wg3-moon-glow" />
-        <div className="wg3-god-rays" />
-        <div className="wg3-fog fog-a" /><div className="wg3-fog fog-b" />
-        <div className="wg3-particles" aria-hidden="true">{Array.from({ length: 20 }, (_, i) => <i key={i} style={{ '--i': i } as React.CSSProperties} />)}</div>
+        <div className="wg3-hero-vignette" aria-hidden="true" />
 
-        <div className="wg3-shell wg3-hero-content">
-          <div className="wg3-hero-copy">
+        <div className="wg3-shell wg3-hero-content wg3-hero-content-banner">
+          <div className="wg3-hero-banner-panel">
             <span className="wg3-kicker">// CLÃ DE COMBAT ARMS</span>
-            <h1 className="glitch-text" data-text="WICKED GRIN">WICKED <em>GRIN</em></h1>
-            <h2>UNIDOS PELA HABILIDADE.<br /><span>MOVIDOS PELA PAIXÃO.</span></h2>
-            <p>Wicked Grin é um clã construído sobre trabalho em equipe, disciplina e a busca incansável pela grandeza. Mais que um jogo, é uma irmandade.</p>
-            <div className="wg3-hero-actions"><Link to="/contato" className="neon-btn">ALISTAR-SE <ArrowRight /></Link><Link to="/elenco" className="ghost-btn">VER ELENCO</Link></div>
+            <h1 className="wg3-sr-only">Wicked Grin</h1>
+            <p><strong>UNIDOS PELA HABILIDADE.</strong><br />MOVIDOS PELA PAIXÃO.</p>
+            <div className="wg3-hero-actions">
+              <Link to="/contato" className="neon-btn">ALISTAR-SE <ArrowRight /></Link>
+              <Link to="/elenco" className="ghost-btn">VER ELENCO</Link>
+              <button type="button" className="ghost-btn" onClick={() => setVideo(true)}>TRAILER</button>
+            </div>
           </div>
-          <VideoCard onPlay={() => setVideo(true)} />
         </div>
         <div className="wg3-hero-hud"><span>WG // 27493</span><span>OPERAÇÃO: GREEN MOON</span><span>STATUS: ONLINE</span></div>
       </section>
