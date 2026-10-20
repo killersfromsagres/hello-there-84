@@ -59,11 +59,3 @@
   .wg3-preloader,.wg3-loadbar i,.wg3-icon-btn.wg3-audio-btn.is-playing:after,.neon-btn:before{animation:none!important;transition:none!important}
   .wg3-spotlight{display:none!important}
 }
-
-/* Nome do clã no hero: texto real (a arte nova do banner não traz o nome desenhado). */
-.wg3-hero-wordmark{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 .22em;margin:10px 0 0;padding-bottom:14px;border-bottom:1px solid rgba(57,255,20,.22);
-  font-family:'Black Ops One','Saira Stencil One',Impact,sans-serif;font-weight:400;font-size:clamp(2.7rem,6vw,4.9rem);line-height:.92;letter-spacing:.015em;text-transform:uppercase;
-  color:#f2f4ef;text-shadow:0 3px 0 rgba(0,0,0,.55),0 10px 32px rgba(0,0,0,.7)}
-.wg3-hero-wordmark em{font-style:normal;color:#39ff14;text-shadow:0 0 18px rgba(57,255,20,.65),0 0 46px rgba(57,255,20,.32),0 3px 0 rgba(0,0,0,.55)}
-.wg3-hero-wordmark+p{margin-top:14px!important}
-@media(max-width:650px){.wg3-hero-wordmark{font-size:clamp(2.4rem,14vw,3.4rem)}}
