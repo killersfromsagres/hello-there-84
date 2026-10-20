@@ -1,18 +1,19 @@
 /* Hero + audio polish. Loaded after the main design system so these rules are intentionally authoritative. */
 .wg3-hero{background:#020502}
+.wg3-hero-banner-only{min-height:100svh;display:block}
 .wg3-hero-media{z-index:0!important;overflow:hidden;background:#020502}
-.wg3-hero-media img{display:block;width:100%;height:100%;object-fit:cover;object-position:center center;filter:saturate(1.06) contrast(1.035) brightness(1.01)!important;transform:none!important;animation:wg3-hero-breathe-clean 16s ease-in-out infinite alternate!important;image-rendering:auto}
-.wg3-hero-vignette{z-index:1!important;pointer-events:none;background:radial-gradient(ellipse at 63% 39%,transparent 0 34%,rgba(0,0,0,.035) 56%,rgba(0,0,0,.26) 100%),linear-gradient(180deg,rgba(2,5,2,.05) 0%,rgba(2,5,2,0) 54%,rgba(5,8,6,.18) 76%,rgba(5,8,6,.68) 100%)!important}
-.wg3-moon-glow{z-index:2!important;mix-blend-mode:screen;opacity:.72}
-.wg3-god-rays{z-index:2!important;mix-blend-mode:screen;opacity:.56}
-.wg3-fog{z-index:2!important;opacity:.72}
+.wg3-hero-media img{display:block;width:100%;height:100%;object-fit:cover;object-position:center center;filter:saturate(1.04) contrast(1.025) brightness(1.03)!important;transform:none!important;animation:wg3-hero-breathe-clean 16s ease-in-out infinite alternate!important;image-rendering:auto}
+.wg3-hero-vignette{z-index:1!important;pointer-events:none;background:radial-gradient(ellipse at 67% 42%,transparent 0 42%,rgba(0,0,0,.025) 67%,rgba(0,0,0,.18) 100%),linear-gradient(180deg,rgba(2,5,2,.025) 0%,rgba(2,5,2,0) 68%,rgba(5,8,6,.12) 84%,rgba(5,8,6,.44) 100%)!important}
+.wg3-moon-glow{z-index:2!important;mix-blend-mode:screen;opacity:.34}
+.wg3-god-rays{z-index:2!important;mix-blend-mode:screen;opacity:.32}
+.wg3-fog{z-index:2!important;opacity:.42}
 .wg3-particles{z-index:2!important}.wg3-hero-content{z-index:4!important}.wg3-hero-hud{z-index:5!important}
-.wg3-hero:after{content:"";position:absolute;z-index:3;pointer-events:none;left:0;right:0;bottom:-1px;height:18vh;min-height:130px;background:linear-gradient(180deg,rgba(5,8,6,0),rgba(5,8,6,.08) 34%,rgba(5,8,6,.42) 72%,#050806 100%)}
+.wg3-hero:after{content:"";position:absolute;z-index:3;pointer-events:none;left:0;right:0;bottom:-1px;height:13vh;min-height:90px;background:linear-gradient(180deg,rgba(5,8,6,0),rgba(5,8,6,.05) 44%,rgba(5,8,6,.23) 76%,#050806 100%)}
 .wg3-icon-btn.wg3-audio-btn{position:relative;overflow:visible;transition:border-color .22s ease,box-shadow .22s ease,color .22s ease,background .22s ease}.wg3-icon-btn.wg3-audio-btn.is-playing{color:#9dff80;border-color:rgba(57,255,20,.42);background:linear-gradient(135deg,rgba(57,255,20,.11),rgba(3,8,4,.42));box-shadow:inset 0 1px rgba(255,255,255,.07),0 0 22px rgba(57,255,20,.14)}.wg3-icon-btn.wg3-audio-btn.is-playing:after{content:"";position:absolute;right:4px;bottom:4px;width:6px;height:6px;border-radius:50%;background:var(--wg3-neon);box-shadow:0 0 10px var(--wg3-neon);animation:wg3-audio-pulse 1.35s ease-in-out infinite}.wg3-icon-btn.wg3-audio-btn.is-muted{color:#869087;border-color:rgba(255,255,255,.1);box-shadow:none}
 /* Remove the green glitch stripe when hovering the Wicked Grin title/brand. */
 .glitch-text:hover:before,.glitch-text:hover:after{content:none!important;display:none!important;opacity:0!important}
 .wg3-brand:hover:before,.wg3-brand:hover:after{content:none!important;display:none!important}
 @keyframes wg3-audio-pulse{0%,100%{opacity:.35;transform:scale(.78)}50%{opacity:1;transform:scale(1.15)}}
-@keyframes wg3-hero-breathe-clean{from{transform:scale(1)}to{transform:scale(1.012)}}
-@media(max-width:900px){.wg3-hero-media img{object-position:62% center;animation:none!important}.wg3-hero-vignette{background:linear-gradient(180deg,rgba(2,5,2,.08),rgba(2,5,2,.03) 58%,rgba(5,8,6,.72) 100%)!important}.wg3-hero:after{height:14vh;min-height:100px}}
+@keyframes wg3-hero-breathe-clean{from{transform:scale(1)}to{transform:scale(1.008)}}
+@media(max-width:900px){.wg3-hero-media img{object-position:64% center;animation:none!important}.wg3-hero-vignette{background:linear-gradient(180deg,rgba(2,5,2,.04),rgba(2,5,2,.01) 70%,rgba(5,8,6,.48) 100%)!important}.wg3-hero:after{height:11vh;min-height:76px}.wg3-moon-glow{opacity:.24}.wg3-god-rays{opacity:.22}.wg3-fog{opacity:.32}}
 @media(prefers-reduced-motion:reduce){.wg3-hero-media img,.wg3-icon-btn.wg3-audio-btn.is-playing:after{animation:none!important}}
