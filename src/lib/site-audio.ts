@@ -2,7 +2,7 @@ const TRACK_URL = 'https://soundcloud.com/caspaofficial/caspa-rusko-custard-chuc
 const STORAGE_KEY = 'wg-audio-muted';
 const PLAYER_ID = 'wg-background-audio';
 const SDK_ID = 'wg-soundcloud-sdk';
-const VOLUME = 80;
+const VOLUME = 45;
 
 type SoundCloudWidget = {
   bind: (event: string, handler: () => void) => void;
@@ -88,6 +88,7 @@ async function ensureWidget() {
     if (requestedStart) widget?.play();
   });
   widget.bind(events.FINISH, () => {
+    // Recomeça a faixa completa sem recriar o player ou perder o estado de mute.
     widget?.seekTo(0);
     widget?.setVolume(mutedState ? 0 : VOLUME);
     widget?.play();
@@ -106,6 +107,7 @@ export function setSiteAudioMuted(muted: boolean) {
   window.localStorage.setItem(STORAGE_KEY, muted ? '1' : '0');
   void ensureWidget().then((instance) => {
     instance?.setVolume(muted ? 0 : VOLUME);
+    // Não faz seek ao mutar/desmutar: a música continua do mesmo ponto.
     if (ready) instance?.play();
   }).catch(() => undefined);
 }
