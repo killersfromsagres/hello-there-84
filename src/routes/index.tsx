@@ -12,7 +12,7 @@ export const Route = createFileRoute('/')({
     { name: 'description', content: 'Wicked Grin: clã de Combat Arms. Unidos pela habilidade, movidos pela paixão.' },
     { property: 'og:title', content: 'Wicked Grin — Mais que um clã.' },
     { property: 'og:description', content: 'Trabalho em equipe, disciplina e a busca incansável pela grandeza.' },
-    { property: 'og:image', content: '/assets/wicked-grin-hero.webp' },
+    { property: 'og:image', content: '/assets/wicked-grin-hero-4k.avif' },
   ] }),
 });
 
@@ -21,7 +21,10 @@ function HomePage() {
   return <SiteShell>
     <main>
       <section className="wg3-hero">
-        <picture className="wg3-hero-media"><img src="/assets/wicked-grin-hero.webp" alt="Wicked Grin sob a lua verde, com personagem tático e cenário de prisão" fetchPriority="high" /></picture>
+        <picture className="wg3-hero-media" aria-hidden="true">
+          <source srcSet="/assets/wicked-grin-hero-4k.avif" type="image/avif" />
+          <img src="/assets/wicked-grin-hero.webp" alt="" fetchPriority="high" decoding="async" />
+        </picture>
         <div className="wg3-hero-vignette" />
         <div className="wg3-moon-glow" />
         <div className="wg3-god-rays" />
