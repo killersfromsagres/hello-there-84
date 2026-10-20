@@ -4,6 +4,7 @@ import { useEffect, type ReactNode } from 'react';
 import appCss from '../styles.css?url';
 import wickedCss from '../wicked-v3.css?url';
 import adminCss from '../wicked-admin.css?url';
+import memberRanksCss from '../member-ranks.css?url';
 import { reportLovableError } from '../lib/lovable-error-reporting';
 
 function NotFoundComponent() {
@@ -32,6 +33,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: 'stylesheet', href: appCss },
       { rel: 'stylesheet', href: wickedCss },
       { rel: 'stylesheet', href: adminCss },
+      { rel: 'stylesheet', href: memberRanksCss },
       { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' },
       { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
       { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous' },
