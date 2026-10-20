@@ -1,73 +1,90 @@
-# WICKED GRIN — Combat Arms Clan
+# WICKED GRIN — Combat Arms Clan V3
 
-Site oficial do clã **WICKED GRIN**, com identidade de base tática noturna em português do Brasil. O projeto usa React, TypeScript, TanStack Start, Vite e Tailwind CSS.
+Reconstrução completa do site do clã **WICKED GRIN**, derivada do novo banner verde fornecido pelo clã. A identidade visual combina prisão tática, lua verde, neon tóxico, HUD militar e glassmorphism.
 
-> Combat Arms e marcas relacionadas pertencem aos seus respectivos proprietários. Este é um site independente de fãs e não possui afiliação ou endosso oficial.
+> **Aviso:** Combat Arms é marca registrada de seus respectivos proprietários. Este site é uma fan page não oficial do clã Wicked Grin.
 
-## Estrutura atual
+## Stack atual
 
-O site foi reduzido para seis áreas: **Início, Sobre, Membros, Regras, Recrutamento e Comunidade**. Ranking, operações e galeria foram removidos da home para reduzir ruído visual e deixar a navegação mais objetiva.
+- React 19 + TypeScript + Vite/TanStack Start
+- TanStack Router
+- Tailwind CSS já existente no projeto
+- Lucide React
+- Animações nativas CSS + IntersectionObserver, evitando novas dependências pesadas e mantendo `bun.lock` estável
+- Integração Supabase por REST, sem SDK adicional
+
+## Rotas
+
+- `/` — Início: hero, vídeo, pilares, números, elenco, notícias, recrutamento
+- `/sobre` — história, valores, regras e liderança
+- `/elenco` — roster com busca, filtro e modal
+- `/patentes` — patentes do jogo + hierarquia interna
+- `/midia` — screenshots, vídeos, highlights e torneios
+- `/comunidade` — Discord, redes, calendário e hall da fama
+- `/contato` — alistamento
+- `/admin` — painel protegido por Supabase Auth
+
+## Banner
+
+O novo banner fornecido pelo clã foi exportado sem alterar sua composição para:
+
+- `public/assets/wicked-grin-hero.webp`
+
+O hero aplica apenas efeitos de interface: vinheta, glow, god rays, névoa, partículas e iluminação. A arte original não é reconstruída em código.
+
+## Patentes oficiais
+
+A página está pronta para os arquivos reais em:
+
+```text
+/public/assets/patentes/patente-01.png
+/public/assets/patentes/patente-02.png
+...
+```
+
+Os dados ficam em `src/data/wicked-v3.ts`. Como a lista oficial ainda não foi enviada, nomes e níveis permanecem marcados como **A DEFINIR** em vez de serem inventados.
+
+## Supabase / backend
+
+O schema está em:
+
+```text
+supabase/schema.sql
+```
+
+Execute o arquivo no SQL Editor do Supabase e configure no ambiente de deploy:
+
+```env
+VITE_SUPABASE_URL=https://SEU-PROJETO.supabase.co
+VITE_SUPABASE_ANON_KEY=SUA_CHAVE_ANON
+```
+
+O formulário `/contato` envia para `recruitment_requests` quando essas variáveis existem. Sem elas, funciona conscientemente em modo demonstração.
+
+O `/admin` usa Supabase Auth por e-mail/senha e oferece CRUD genérico para membros, patentes, notícias, mídia, eventos, números e pedidos de recrutamento. Crie manualmente os usuários autorizados no Supabase Auth. Antes de produção, refine a policy de `authenticated` do schema para uma role/claim administrativa específica.
+
+## Conteúdo a providenciar
+
+- Imagens oficiais das patentes e a lista correta de nomes/níveis
+- Avatares e dados reais dos membros
+- Link do vídeo/trailer do clã
+- Discord + ID do servidor
+- YouTube, Instagram, TikTok e WhatsApp
+- Datas reais de eventos, conquistas e números do clã
+- Projeto Supabase e credenciais públicas de ambiente
 
 ## Desenvolvimento
 
 ```bash
-bun install
+bun install --frozen-lockfile
 bun run test
 bun run build
 ```
 
-## Banner
+## Performance e acessibilidade
 
-O banner limpo aprovado pelo clã é carregado por `src/assets/wicked-banner.ts` e pelos fragmentos em `src/assets/banner/`. Ele é mantido como arte de fundo, sem botões ou controles embutidos. A interface, navegação e painéis ficam separados em HTML/CSS.
-
-Não substitua o banner por ilustração gerada. No mobile o ponto focal é controlado por `object-position` em `src/banner-v2.css`.
-
-## Membros
-
-Todos os dados da equipe ficam em um único arquivo:
-
-- `src/data/clan.ts`
-
-Cada membro possui `id`, `nick`, hierarquia, função, patente, arma, status, data de entrada e observação. Para adicionar um membro, duplique um objeto da lista `members` e edite os campos. Para remover, apague o objeto correspondente.
-
-Não existe painel administrativo nem banco de dados nesta versão. A edição é feita no arquivo e publicada pelo GitHub.
-
-## Recrutamento
-
-O formulário fica em `src/components/clan/recruitment.tsx`, com validação em `src/components/clan/recruitment-schema.ts`.
-
-Ele tem três etapas: **Dados do jogador → Experiência → Motivação**. O envio está em **modo demonstração** e não salva dados.
-
-Para ativar candidaturas reais, conecte Supabase, um endpoint próprio ou um serviço de formulários e substitua o estado de sucesso local pelo envio seguro. Nunca exponha chaves privadas no front-end.
-
-## Discord e redes
-
-Edite `clanConfig` em `src/data/clan.ts`:
-
-```ts
-export const clanConfig = {
-  discordInvite: 'https://discord.gg/...',
-  discordServerId: '...',
-  instagram: 'https://instagram.com/...',
-  youtube: 'https://youtube.com/@...',
-  twitch: 'https://twitch.tv/...',
-};
-```
-
-## Identidade visual
-
-Os tokens de cor, vidro, blur, botões chanfrados, campos, filtros, modal de membro e responsividade ficam centralizados em `src/banner-v2.css`. Os ícones táticos reutilizáveis e o sorriso ficam em `src/components/clan/marks.tsx`.
-
-A interface respeita `prefers-reduced-motion` e `prefers-reduced-transparency`, e inclui fallback para navegadores sem `backdrop-filter`.
+A interface reduz blur e complexidade visual no mobile, possui fallback sem `backdrop-filter` e respeita `prefers-reduced-motion`. O cursor customizado aparece apenas em dispositivos com ponteiro fino.
 
 ## Lovable
 
-A Lovable fica somente para **visualização e hospedagem**. O desenvolvimento pode ser feito diretamente no GitHub; mudanças incorporadas à `main` sincronizam com o projeto conectado.
-
-## Pendências antes do lançamento definitivo
-
-- Configurar convite/ID do Discord e redes sociais.
-- Conectar o backend do recrutamento.
-- Substituir dados fictícios dos membros pelos dados reais do clã.
-- Ajustar os números demonstrativos do hero para os números reais.
-- Definir domínio e imagem Open Graph definitiva.
+A Lovable pode permanecer apenas como visualização/hospedagem. As alterações deste projeto são feitas diretamente no GitHub.
