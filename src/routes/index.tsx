@@ -22,7 +22,8 @@ export const Route = createFileRoute('/')({
   }),
 });
 
-const ZANGADAO_WEAPON_URL = '/assets/zangadao-favorite-weapon-v2.webp';
+// Arquivo real em public/assets (nome com hash do conteúdo: o host guarda /assets por 1 ano).
+const ZANGADAO_WEAPON_URL = '/assets/zangadao-favorite-weapon-ef3efcf413.webp';
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
 function HomePage() {
