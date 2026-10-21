@@ -9,20 +9,15 @@ async function assemble(sourceDir, outputDir, outputBase, urlModulePath, pattern
 
   if (!files.length) throw new Error(`No media chunks found in ${sourceDir}`);
 
-  // Cada arquivo .b64 representa um segmento binário independente. Decodificar
-  // separadamente evita que padding "=" de um bloco faça o Node ignorar os próximos.
-  const chunks = await Promise.all(files.map(async (name) => {
-    const encoded = (await readFile(join(sourceDir, name), 'utf8')).replace(/\s+/g, '');
-    return Buffer.from(encoded, 'base64');
-  }));
-  const bytes = Buffer.concat(chunks);
+  const encoded = (await Promise.all(files.map((name) => readFile(join(sourceDir, name), 'utf8'))))
+    .join('')
+    .replace(/\s+/g, '');
 
-  if (bytes.length < 250_000) {
-    throw new Error(`Hero HQ looks truncated: ${bytes.length} bytes from ${files.length} chunks`);
-  }
+  const bytes = Buffer.from(encoded, 'base64');
+  if (bytes.length < 30_000) throw new Error(`Hero asset looks truncated: ${bytes.length} bytes`);
 
   const isWebP = bytes.subarray(0, 4).toString('ascii') === 'RIFF' && bytes.subarray(8, 12).toString('ascii') === 'WEBP';
-  if (!isWebP) throw new Error('Hero HQ is not a valid WebP file');
+  if (!isWebP) throw new Error('Hero asset is not a valid WebP file');
 
   const hash = createHash('sha1').update(bytes).digest('hex').slice(0, 10);
   const outputName = `${outputBase}-${hash}.webp`;
@@ -34,12 +29,8 @@ async function assemble(sourceDir, outputDir, outputBase, urlModulePath, pattern
   }
   await writeFile(join(outputDir, outputName), bytes);
 
-  await writeFile(
-    urlModulePath,
-    `// GERADO por scripts/assemble-media.mjs — não editar à mão.\nexport const HERO_URL = '/assets/${outputName}';\n`,
-  );
+  await writeFile(urlModulePath, `// GERADO por scripts/assemble-media.mjs — não editar à mão.\nexport const HERO_URL = '/assets/${outputName}';\n`);
   console.log(`[media] /assets/${outputName}: ${bytes.length.toLocaleString()} bytes from ${files.length} chunk(s)`);
 }
 
-// Banner Wicked Grin HQ: mantém 1536x1024 e qualidade alta, sem redimensionar no build.
-await assemble('src/assets/banner-user-hq', 'public/assets', 'wicked-grin-hero-hq', 'src/assets/hero-url.ts', /^part\d+\.b64$/);
+await assemble('src/assets/banner-user-v2', 'public/assets', 'wicked-grin-hero', 'src/assets/hero-url.ts', /^part\d+\.b64$/);
