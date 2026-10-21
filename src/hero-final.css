@@ -1,0 +1,31 @@
+/* Banner final (1536x1024, 3:2). Carregado por último: é a única regra válida para o hero.
+   A base do banner some em #050806 (cor do fundo do site) por máscara, sem emenda visível. */
+html body .wg3-site .wg3-hero.wg3-hero-banner{position:relative!important;min-height:max(100svh,560px)!important;background:#050806!important;overflow:hidden!important;contain:none!important;isolation:isolate}
+html body .wg3-site .wg3-hero-banner .wg3-hero-media{position:absolute!important;inset:0!important;z-index:0!important;overflow:hidden!important;background:#050806!important;
+  -webkit-mask-image:linear-gradient(180deg,#000 0,#000 56%,rgba(0,0,0,.94) 63%,rgba(0,0,0,.78) 70%,rgba(0,0,0,.5) 80%,rgba(0,0,0,.2) 90%,rgba(0,0,0,.05) 96%,transparent 100%);
+  mask-image:linear-gradient(180deg,#000 0,#000 56%,rgba(0,0,0,.94) 63%,rgba(0,0,0,.78) 70%,rgba(0,0,0,.5) 80%,rgba(0,0,0,.2) 90%,rgba(0,0,0,.05) 96%,transparent 100%)}
+html body .wg3-site .wg3-hero-banner .wg3-hero-media picture{display:block!important;width:100%!important;height:100%!important}
+html body .wg3-site .wg3-hero-banner .wg3-hero-media img{display:block!important;width:100%!important;height:100%!important;max-width:none!important;aspect-ratio:auto!important;margin:0!important;object-fit:cover!important;object-position:50% 36%!important;image-rendering:auto}
+/* Escurece só um pouco as bordas laterais; o título da arte continua intacto. */
+html body .wg3-site .wg3-hero-banner .wg3-hero-vignette{z-index:1!important;display:block!important;pointer-events:none;background:radial-gradient(ellipse at 50% 42%,transparent 55%,rgba(2,4,2,.38) 100%)!important}
+html body .wg3-site .wg3-hero-banner:after{display:none!important}
+html body .wg3-site .wg3-hero-banner .wg3-hero-content-banner{position:relative!important;z-index:4!important;display:flex!important;align-items:flex-end!important;min-height:max(100svh,560px)!important;padding-bottom:clamp(40px,7vh,84px)!important}
+
+/* Telas muito largas e baixas: a arte 3:2 cortaria o título, então ancora no centro. */
+@media(min-aspect-ratio:2/1){html body .wg3-site .wg3-hero-banner .wg3-hero-media img{object-position:50% 46%!important}}
+
+@media(max-width:900px){
+  html body .wg3-site .wg3-hero.wg3-hero-banner{display:block!important;min-height:0!important;padding-top:72px!important}
+  html body .wg3-site .wg3-hero-banner .wg3-hero-media{position:relative!important;inset:auto!important;height:auto!important;aspect-ratio:3/2!important;
+    -webkit-mask-image:linear-gradient(180deg,#000 0,#000 66%,rgba(0,0,0,.7) 80%,rgba(0,0,0,.25) 92%,transparent 100%);
+    mask-image:linear-gradient(180deg,#000 0,#000 66%,rgba(0,0,0,.7) 80%,rgba(0,0,0,.25) 92%,transparent 100%)}
+  html body .wg3-site .wg3-hero-banner .wg3-hero-media img{object-position:50% 50%!important}
+  html body .wg3-site .wg3-hero-banner .wg3-hero-vignette{display:none!important}
+  html body .wg3-site .wg3-hero-banner .wg3-hero-content-banner{display:block!important;min-height:0!important;margin-top:-9%;padding:0 18px 64px!important}
+  html body .wg3-site .wg3-hero-banner .wg3-hero-banner-panel{background:rgba(5,8,6,.92)!important}
+}
+@media(max-width:520px){
+  html body .wg3-site .wg3-hero-banner .wg3-hero-media{aspect-ratio:4/3!important}
+  html body .wg3-site .wg3-hero-banner .wg3-hero-media img{object-position:50% 38%!important}
+  html body .wg3-site .wg3-hero-banner .wg3-hero-content-banner{margin-top:-14%;padding-inline:12px!important}
+}

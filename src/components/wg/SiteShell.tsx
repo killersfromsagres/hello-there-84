@@ -1,11 +1,11 @@
 import { Link, useRouterState } from '@tanstack/react-router';
 import { Search, Volume2, VolumeX, Menu, X } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react';
-import { HERO_URL } from '@/assets/hero-url';
+import { HERO_URL, HERO_FALLBACK_URL } from '@/assets/hero-url';
 import { getStoredMuted, installSiteAudioUnlock, setSiteAudioMuted, startSiteAudio } from '@/lib/site-audio';
 
 // Fundo do bloco "A TAG NÃO É DADA" usa o mesmo banner, com a URL (com hash) vinda do build.
-const siteVars = { '--wg3-hero-bg': `url(${HERO_URL})` } as CSSProperties;
+const siteVars = { '--wg3-hero-bg': `image-set(url(${HERO_URL}) type('image/avif'), url(${HERO_FALLBACK_URL}) type('image/webp'))` } as CSSProperties;
 
 const nav = [
   ['/', 'INÍCIO'],

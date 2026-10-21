@@ -9,6 +9,7 @@ import heroAudioCss from '../hero-audio-fix.css?url';
 import operatorSpotlightCss from '../operator-spotlight.css?url';
 import stabilityCss from '../performance-stability.css?url';
 import cursorFixCss from '../cursor-fix.css?url';
+import heroFinalCss from '../hero-final.css?url';
 import { reportLovableError } from '../lib/lovable-error-reporting';
 import { HERO_URL } from '../assets/hero-url';
 
@@ -43,8 +44,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: 'stylesheet', href: operatorSpotlightCss },
       { rel: 'stylesheet', href: stabilityCss },
       { rel: 'stylesheet', href: cursorFixCss },
+      { rel: 'stylesheet', href: heroFinalCss },
       { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' },
-      { rel: 'preload', href: HERO_URL, as: 'image', type: 'image/webp' },
+      { rel: 'preload', href: HERO_URL, as: 'image', type: 'image/avif' },
       { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
       { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous' },
       { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Black+Ops+One&family=Inter:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap' },

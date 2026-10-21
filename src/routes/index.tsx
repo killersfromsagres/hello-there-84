@@ -4,7 +4,7 @@ import { ArrowRight, Crosshair, X } from 'lucide-react';
 import { SiteShell } from '@/components/wg/SiteShell';
 import { OperatorSpotlight } from '@/components/wg/OperatorSpotlight';
 import { WeaponFire } from '@/components/wg/WeaponFire';
-import { HERO_URL } from '@/assets/hero-url';
+import { HERO_URL, HERO_FALLBACK_URL } from '@/assets/hero-url';
 import { CTA, Counter, GlassCard, Marquee, MemberCard, PillarCard, SectionTitle } from '@/components/wg/UI';
 import { clanStats, members, news } from '@/data/wicked-v3';
 import weaponInspectorCss from '../weapon-inspector.css?url';
@@ -17,7 +17,7 @@ export const Route = createFileRoute('/')({
       { name: 'description', content: 'Wicked Grin: clã de Combat Arms. Unidos pela habilidade, movidos pela paixão.' },
       { property: 'og:title', content: 'Wicked Grin — Mais que um clã.' },
       { property: 'og:description', content: 'Trabalho em equipe, disciplina e a busca incansável pela grandeza.' },
-      { property: 'og:image', content: HERO_URL },
+      { property: 'og:image', content: HERO_FALLBACK_URL },
     ],
     links: [{ rel: 'stylesheet', href: weaponInspectorCss }],
   }),
@@ -35,14 +35,17 @@ function HomePage() {
     <main>
       <section className="wg3-hero wg3-hero-banner">
         <div className="wg3-hero-media" aria-hidden="true">
-          <img
-            src={HERO_URL}
-            alt=""
-            width={1672}
-            height={941}
-            fetchPriority="high"
-            decoding="async"
-          />
+          <picture>
+            <source srcSet={HERO_URL} type="image/avif" />
+            <img
+              src={HERO_FALLBACK_URL}
+              alt=""
+              width={1536}
+              height={1024}
+              fetchPriority="high"
+              decoding="async"
+            />
+          </picture>
         </div>
         <div className="wg3-hero-vignette" aria-hidden="true" />
 
