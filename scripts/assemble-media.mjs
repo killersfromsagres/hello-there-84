@@ -9,11 +9,14 @@ async function assemble(sourceDir, outputDir, outputBase, urlModulePath, pattern
 
   if (!files.length) throw new Error(`No media chunks found in ${sourceDir}`);
 
-  const encoded = (await Promise.all(files.map((name) => readFile(join(sourceDir, name), 'utf8'))))
-    .join('')
-    .replace(/\s+/g, '');
+  // Cada arquivo .b64 representa um segmento binário independente. Decodificar
+  // separadamente evita que padding "=" de um bloco faça o Node ignorar os próximos.
+  const chunks = await Promise.all(files.map(async (name) => {
+    const encoded = (await readFile(join(sourceDir, name), 'utf8')).replace(/\s+/g, '');
+    return Buffer.from(encoded, 'base64');
+  }));
+  const bytes = Buffer.concat(chunks);
 
-  const bytes = Buffer.from(encoded, 'base64');
   if (bytes.length < 250_000) {
     throw new Error(`Hero HQ looks truncated: ${bytes.length} bytes from ${files.length} chunks`);
   }
