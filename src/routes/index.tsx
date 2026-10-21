@@ -4,7 +4,6 @@ import { ArrowRight, Crosshair, X } from 'lucide-react';
 import { SiteShell } from '@/components/wg/SiteShell';
 import { OperatorSpotlight } from '@/components/wg/OperatorSpotlight';
 import { HERO_URL } from '@/assets/hero-url';
-import { ZANGADAO_WEAPON_URL } from '@/assets/zangadao-weapon-inline';
 import { CTA, Counter, GlassCard, Marquee, MemberCard, PillarCard, SectionTitle } from '@/components/wg/UI';
 import { clanStats, members, news } from '@/data/wicked-v3';
 import weaponInspectorCss from '../weapon-inspector.css?url';
@@ -23,6 +22,7 @@ export const Route = createFileRoute('/')({
   }),
 });
 
+const ZANGADAO_WEAPON_URL = '/assets/zangadao-favorite-weapon-v2.webp';
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
 function HomePage() {
