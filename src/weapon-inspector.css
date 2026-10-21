@@ -14,25 +14,35 @@
 .wg3-weapon-spec b{display:block;margin-bottom:6px;color:var(--wg3-neon);font:600 9px Orbitron,monospace;letter-spacing:.16em}
 .wg3-weapon-spec span{color:#d7dfd7;font-size:13px;line-height:1.45}
 
-.wg3-weapon-main{min-width:0;display:grid;grid-template-rows:auto minmax(360px,1fr) auto;padding:24px;gap:15px}
+.wg3-weapon-main{min-width:0;display:grid;grid-template-rows:auto minmax(380px,1fr) auto;padding:24px;gap:15px}
 .wg3-weapon-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .wg3-weapon-close{width:44px;height:44px;display:grid;place-items:center;border:1px solid rgba(57,255,20,.2);border-radius:10px;background:rgba(255,255,255,.035);color:#fff;cursor:pointer}
 .wg3-weapon-close:hover{border-color:var(--wg3-neon);color:var(--wg3-neon)}
-.wg3-weapon-stage{position:relative;min-height:440px;overflow:hidden;border:1px solid rgba(57,255,20,.15);border-radius:14px;background:radial-gradient(circle at 50% 45%,rgba(57,255,20,.11),transparent 25rem),linear-gradient(180deg,#08110a,#020503);cursor:grab;perspective:1500px;touch-action:none;user-select:none;isolation:isolate}
-.wg3-weapon-stage.is-dragging{cursor:grabbing}
-.wg3-weapon-stage:before{content:"";position:absolute;inset:0;z-index:-1;opacity:.28;background-image:linear-gradient(rgba(57,255,20,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(57,255,20,.08) 1px,transparent 1px);background-size:48px 48px;mask-image:radial-gradient(circle at center,#000,transparent 82%)}
-.wg3-weapon-stage:after{content:"";position:absolute;left:50%;bottom:12%;width:min(62%,560px);height:42px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(ellipse,rgba(0,0,0,.7),transparent 68%);filter:blur(10px)}
-.wg3-weapon-object{position:absolute;inset:0;display:grid;place-items:center;transform-style:preserve-3d;will-change:transform;transition:transform .12s ease-out}
-.wg3-weapon-stage.is-dragging .wg3-weapon-object{transition:none}
-.wg3-weapon-object img{position:relative;z-index:2;width:min(92%,880px);height:auto;max-height:72%;object-fit:contain;pointer-events:none;-webkit-user-drag:none;filter:drop-shadow(0 26px 24px rgba(0,0,0,.62)) drop-shadow(0 0 28px rgba(57,255,20,.12));transform:translateZ(70px)}
-.wg3-weapon-scan{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,transparent 0 46%,rgba(57,255,20,.12) 49%,rgba(57,255,20,.32) 50%,rgba(57,255,20,.1) 51%,transparent 54%);transform:translateY(-120%);animation:wg3-weapon-scan 4.2s linear infinite;mix-blend-mode:screen}
 .wg3-weapon-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .wg3-weapon-hint{display:flex;gap:14px;flex-wrap:wrap;color:#7f8e80;font:600 9px Orbitron,monospace;letter-spacing:.11em;text-transform:uppercase}
-.wg3-weapon-actions{display:flex;gap:8px;flex-wrap:wrap}
-.wg3-weapon-actions button{min-height:40px;padding:0 14px;border:1px solid rgba(57,255,20,.18);border-radius:9px;background:rgba(255,255,255,.035);color:#e8eee8;font:700 9px Orbitron,monospace;letter-spacing:.1em;cursor:pointer}
-.wg3-weapon-actions button:hover{border-color:var(--wg3-neon);color:var(--wg3-neon)}
 
-@keyframes wg3-weapon-scan{to{transform:translateY(120%)}}
-@media(max-width:900px){.wg3-weapon-backdrop{padding:12px}.wg3-weapon-modal{grid-template-columns:1fr;max-height:calc(100svh - 24px);overflow:auto}.wg3-weapon-panel{border-right:0;border-bottom:1px solid rgba(57,255,20,.14);padding:20px}.wg3-weapon-specs{grid-template-columns:repeat(3,minmax(0,1fr))}.wg3-weapon-main{padding:16px;grid-template-rows:auto minmax(330px,52vh) auto}.wg3-weapon-stage{min-height:330px}}
-@media(max-width:620px){.wg3-weapon-panel h2{font-size:2rem}.wg3-weapon-specs{grid-template-columns:1fr}.wg3-weapon-main{grid-template-rows:auto minmax(300px,46vh) auto}.wg3-weapon-hint{gap:8px}.wg3-weapon-actions{width:100%}.wg3-weapon-actions button{flex:1}}
-@media(prefers-reduced-motion:reduce){.wg3-weapon-scan{animation:none}.wg3-weapon-object{transition:none}}
+@media(max-width:900px){.wg3-weapon-backdrop{padding:12px}.wg3-weapon-modal{grid-template-columns:1fr;max-height:calc(100svh - 24px);overflow:auto}.wg3-weapon-panel{border-right:0;border-bottom:1px solid rgba(57,255,20,.14);padding:20px}.wg3-weapon-specs{grid-template-columns:repeat(2,minmax(0,1fr))}.wg3-weapon-main{padding:16px;grid-template-rows:auto minmax(330px,52vh) auto}.wg3-weapon-stage{min-height:330px}}
+@media(max-width:620px){.wg3-weapon-panel h2{font-size:2rem}.wg3-weapon-specs{grid-template-columns:1fr}.wg3-weapon-main{grid-template-rows:auto minmax(300px,46vh) auto}.wg3-weapon-hint{gap:8px}}
+
+/* ===== Palco da arma: imagem em alta qualidade com fogo realista em volta (WeaponFire.tsx) ===== */
+.wg3-weapon-stage{position:relative;min-height:440px;display:grid;place-items:center;overflow:hidden;border:1px solid rgba(255,128,40,.18);border-radius:14px;isolation:isolate;
+  background:radial-gradient(ellipse 52% 34% at 50% 52%,rgba(255,92,20,.08),transparent 72%),linear-gradient(180deg,#07090a,#020303)}
+.wg3-weapon-stage:before{content:"";position:absolute;inset:0;z-index:-1;opacity:.16;background-image:linear-gradient(rgba(255,140,60,.1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,140,60,.1) 1px,transparent 1px);background-size:52px 52px;-webkit-mask-image:radial-gradient(ellipse at 50% 60%,#000,transparent 78%);mask-image:radial-gradient(ellipse at 50% 60%,#000,transparent 78%)}
+.wg3-weapon-stage:after{content:"";position:absolute;left:50%;bottom:9%;width:min(66%,600px);height:46px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(ellipse,rgba(0,0,0,.55),transparent 70%);filter:blur(12px);pointer-events:none}
+
+.wg3-weapon-fire{position:relative;width:min(84%,860px);isolation:isolate;transform:translateY(25%)}
+.wg3-weapon-fire:before{content:"";position:absolute;left:-12%;right:-12%;top:-40%;bottom:-30%;z-index:-1;border-radius:50%;background:radial-gradient(ellipse at 50% 38%,rgba(255,92,18,.1),transparent 62%);animation:wg3-fire-breathe 3.4s ease-in-out infinite alternate}
+.wg3-weapon-fire-canvas{position:absolute;z-index:0;left:-10%;top:-75%;width:120%;height:197%;pointer-events:none;opacity:0;transition:opacity .6s ease}
+.wg3-weapon-fire[data-fire="live"] .wg3-weapon-fire-canvas,.wg3-weapon-fire[data-fire="static"] .wg3-weapon-fire-canvas{opacity:1}
+.wg3-weapon-fire-img{position:relative;z-index:1;display:block;width:100%;height:auto;pointer-events:none;-webkit-user-drag:none;user-select:none;
+  filter:drop-shadow(0 0 2px rgba(255,150,60,.7)) drop-shadow(0 0 12px rgba(255,92,18,.3)) drop-shadow(0 22px 22px rgba(0,0,0,.72));animation:wg3-fire-flicker 2.7s ease-in-out infinite}
+/* Luz do fogo no metal: laranja forte nas bordas de cima, some para baixo. */
+.wg3-weapon-fire-heat{position:absolute;inset:0;z-index:2;pointer-events:none;mix-blend-mode:screen;
+  -webkit-mask-image:var(--weapon-mask);mask-image:var(--weapon-mask);-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  background:linear-gradient(180deg,rgba(255,160,48,.62),rgba(255,84,10,.2) 42%,transparent 78%);animation:wg3-fire-heat 2.2s ease-in-out infinite alternate}
+
+@keyframes wg3-fire-flicker{0%,100%{filter:drop-shadow(0 0 2px rgba(255,150,60,.7)) drop-shadow(0 0 16px rgba(255,92,18,.4)) drop-shadow(0 22px 22px rgba(0,0,0,.72)) brightness(1)}38%{filter:drop-shadow(0 0 3px rgba(255,170,70,.85)) drop-shadow(0 0 22px rgba(255,100,20,.55)) drop-shadow(0 22px 22px rgba(0,0,0,.72)) brightness(1.05)}70%{filter:drop-shadow(0 0 2px rgba(255,140,50,.6)) drop-shadow(0 0 14px rgba(255,86,16,.34)) drop-shadow(0 22px 22px rgba(0,0,0,.72)) brightness(.98)}}
+@keyframes wg3-fire-heat{from{opacity:.55}to{opacity:1}}
+@keyframes wg3-fire-breathe{from{opacity:.65;transform:scale(.97)}to{opacity:1;transform:scale(1.03)}}
+@media(max-width:620px){.wg3-weapon-stage{min-height:300px}.wg3-weapon-fire{width:92%}}
+@media(prefers-reduced-motion:reduce){.wg3-weapon-fire:before,.wg3-weapon-fire-img,.wg3-weapon-fire-heat{animation:none}}

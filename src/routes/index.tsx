@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type WheelEvent as ReactWheelEvent } from 'react';
+import { useEffect, useState } from 'react';
 import { ArrowRight, Crosshair, X } from 'lucide-react';
 import { SiteShell } from '@/components/wg/SiteShell';
 import { OperatorSpotlight } from '@/components/wg/OperatorSpotlight';
+import { WeaponFire } from '@/components/wg/WeaponFire';
 import { HERO_URL } from '@/assets/hero-url';
 import { CTA, Counter, GlassCard, Marquee, MemberCard, PillarCard, SectionTitle } from '@/components/wg/UI';
 import { clanStats, members, news } from '@/data/wicked-v3';
@@ -23,8 +24,8 @@ export const Route = createFileRoute('/')({
 });
 
 // Arquivo real em public/assets (nome com hash do conteúdo: o host guarda /assets por 1 ano).
-const ZANGADAO_WEAPON_URL = '/assets/zangadao-favorite-weapon-ef3efcf413.webp';
-const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+const ZANGADAO_WEAPON_URL = '/assets/zangadao-favorite-weapon-83a8cdb3fc.webp';
+const ZANGADAO_WEAPON_SIZE = { width: 2172, height: 724 };
 
 function HomePage() {
   const [video, setVideo] = useState(false);
@@ -95,10 +96,6 @@ function HomePage() {
 }
 
 function WeaponInspectModal({ onClose }: { onClose: () => void }) {
-  const [view, setView] = useState({ x: -7, y: -12, zoom: 1 });
-  const [dragging, setDragging] = useState(false);
-  const dragRef = useRef<{ x: number; y: number } | null>(null);
-
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
@@ -112,85 +109,31 @@ function WeaponInspectModal({ onClose }: { onClose: () => void }) {
     };
   }, [onClose]);
 
-  const onPointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
-    event.currentTarget.setPointerCapture(event.pointerId);
-    dragRef.current = { x: event.clientX, y: event.clientY };
-    setDragging(true);
-  };
-
-  const onPointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
-    if (!dragRef.current) return;
-    const dx = event.clientX - dragRef.current.x;
-    const dy = event.clientY - dragRef.current.y;
-    dragRef.current = { x: event.clientX, y: event.clientY };
-    setView((current) => ({
-      ...current,
-      y: clamp(current.y + dx * .28, -62, 62),
-      x: clamp(current.x - dy * .2, -28, 28),
-    }));
-  };
-
-  const stopDrag = () => {
-    dragRef.current = null;
-    setDragging(false);
-  };
-
-  const onWheel = (event: ReactWheelEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    setView((current) => ({
-      ...current,
-      zoom: clamp(current.zoom + (event.deltaY < 0 ? .08 : -.08), .72, 1.5),
-    }));
-  };
-
-  const reset = () => setView({ x: -7, y: -12, zoom: 1 });
-
   return (
     <div className="wg3-weapon-backdrop" role="presentation" onPointerDown={(event) => event.target === event.currentTarget && onClose()}>
       <section className="wg3-weapon-modal" role="dialog" aria-modal="true" aria-label="Arma favorita do player Zangadao SBC">
         <aside className="wg3-weapon-panel">
           <span className="wg3-kicker">LOADOUT // ZANGADAO SBC</span>
           <h2>ARMA FAVORITA <em>DO PLAYER</em></h2>
-          <p>Modo de inspeção inspirado em jogos FPS. Segure e arraste para examinar a arma; use a roda do mouse para aproximar ou afastar.</p>
+          <p>O loadout favorito de Zangadao SBC no campo de batalha.</p>
           <div className="wg3-weapon-specs">
             <div className="wg3-weapon-spec"><b>OPERADOR</b><span>Zangadao SBC</span></div>
-            <div className="wg3-weapon-spec"><b>INSPEÇÃO</b><span>Arrastar + zoom interativo</span></div>
             <div className="wg3-weapon-spec"><b>STATUS</b><span>Loadout favorito // ativo</span></div>
           </div>
         </aside>
 
         <div className="wg3-weapon-main">
           <header className="wg3-weapon-toolbar">
-            <span className="wg3-kicker">WEAPON INSPECT // ONLINE</span>
-            <button type="button" className="wg3-weapon-close" onClick={onClose} aria-label="Fechar inspeção"><X /></button>
+            <span className="wg3-kicker">ARMA FAVORITA // ATIVA</span>
+            <button type="button" className="wg3-weapon-close" onClick={onClose} aria-label="Fechar"><X /></button>
           </header>
 
-          <div
-            className={`wg3-weapon-stage${dragging ? ' is-dragging' : ''}`}
-            onPointerDown={onPointerDown}
-            onPointerMove={onPointerMove}
-            onPointerUp={stopDrag}
-            onPointerCancel={stopDrag}
-            onLostPointerCapture={stopDrag}
-            onWheel={onWheel}
-            aria-label="Área interativa para inspecionar a arma"
-          >
-            <div className="wg3-weapon-scan" aria-hidden="true" />
-            <div
-              className="wg3-weapon-object"
-              style={{ transform: `rotateX(${view.x}deg) rotateY(${view.y}deg) scale(${view.zoom})` }}
-            >
-              <img src={ZANGADAO_WEAPON_URL} alt="Arma favorita de Zangadao SBC" draggable={false} />
-            </div>
+          <div className="wg3-weapon-stage">
+            <WeaponFire src={ZANGADAO_WEAPON_URL} alt="Arma favorita de Zangadao SBC" width={ZANGADAO_WEAPON_SIZE.width} height={ZANGADAO_WEAPON_SIZE.height} />
           </div>
 
           <footer className="wg3-weapon-footer">
-            <div className="wg3-weapon-hint"><span>SEGURE + ARRASTE</span><span>SCROLL = ZOOM</span><span>ESC = FECHAR</span></div>
-            <div className="wg3-weapon-actions">
-              <button type="button" onClick={() => setView((current) => ({ ...current, y: clamp(current.y - 12, -62, 62) }))}>GIRAR ESQ.</button>
-              <button type="button" onClick={reset}>RESETAR</button>
-              <button type="button" onClick={() => setView((current) => ({ ...current, y: clamp(current.y + 12, -62, 62) }))}>GIRAR DIR.</button>
-            </div>
+            <span className="wg3-weapon-hint">ESC = FECHAR</span>
           </footer>
         </div>
       </section>
