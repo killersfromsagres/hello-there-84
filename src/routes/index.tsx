@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { ArrowRight, Crosshair, X } from 'lucide-react';
 import { SiteShell } from '@/components/wg/SiteShell';
 import { OperatorSpotlight } from '@/components/wg/OperatorSpotlight';
-import { WeaponFire } from '@/components/wg/WeaponFire';
 import { HERO_URL, HERO_FALLBACK_URL } from '@/assets/hero-url';
 import { CTA, Counter, GlassCard, Marquee, MemberCard, PillarCard, SectionTitle } from '@/components/wg/UI';
 import { clanStats, members, news } from '@/data/wicked-v3';
@@ -132,7 +131,7 @@ function WeaponInspectModal({ onClose }: { onClose: () => void }) {
           </header>
 
           <div className="wg3-weapon-stage">
-            <WeaponFire src={ZANGADAO_WEAPON_URL} alt="Arma favorita de Zangadao SBC" width={ZANGADAO_WEAPON_SIZE.width} height={ZANGADAO_WEAPON_SIZE.height} />
+            <img className="wg3-weapon-img" src={ZANGADAO_WEAPON_URL} alt="Arma favorita de Zangadao SBC" width={ZANGADAO_WEAPON_SIZE.width} height={ZANGADAO_WEAPON_SIZE.height} decoding="async" />
           </div>
 
           <footer className="wg3-weapon-footer">

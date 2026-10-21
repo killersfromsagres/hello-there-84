@@ -24,25 +24,13 @@
 @media(max-width:900px){.wg3-weapon-backdrop{padding:12px}.wg3-weapon-modal{grid-template-columns:1fr;max-height:calc(100svh - 24px);overflow:auto}.wg3-weapon-panel{border-right:0;border-bottom:1px solid rgba(57,255,20,.14);padding:20px}.wg3-weapon-specs{grid-template-columns:repeat(2,minmax(0,1fr))}.wg3-weapon-main{padding:16px;grid-template-rows:auto minmax(330px,52vh) auto}.wg3-weapon-stage{min-height:330px}}
 @media(max-width:620px){.wg3-weapon-panel h2{font-size:2rem}.wg3-weapon-specs{grid-template-columns:1fr}.wg3-weapon-main{grid-template-rows:auto minmax(300px,46vh) auto}.wg3-weapon-hint{gap:8px}}
 
-/* ===== Palco da arma: imagem em alta qualidade com fogo realista em volta (WeaponFire.tsx) ===== */
-.wg3-weapon-stage{position:relative;min-height:440px;display:grid;place-items:center;overflow:hidden;border:1px solid rgba(255,128,40,.18);border-radius:14px;isolation:isolate;
-  background:radial-gradient(ellipse 52% 34% at 50% 52%,rgba(255,92,20,.08),transparent 72%),linear-gradient(180deg,#07090a,#020303)}
-.wg3-weapon-stage:before{content:"";position:absolute;inset:0;z-index:-1;opacity:.16;background-image:linear-gradient(rgba(255,140,60,.1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,140,60,.1) 1px,transparent 1px);background-size:52px 52px;-webkit-mask-image:radial-gradient(ellipse at 50% 60%,#000,transparent 78%);mask-image:radial-gradient(ellipse at 50% 60%,#000,transparent 78%)}
+/* ===== Palco da arma: imagem em alta qualidade ===== */
+.wg3-weapon-stage{position:relative;min-height:440px;display:grid;place-items:center;overflow:hidden;border:1px solid rgba(57,255,20,.2);border-radius:14px;isolation:isolate;
+  background:radial-gradient(ellipse 52% 34% at 50% 52%,rgba(57,255,20,.07),transparent 72%),linear-gradient(180deg,#07090a,#020303)}
+.wg3-weapon-stage:before{content:"";position:absolute;inset:0;z-index:-1;opacity:.16;background-image:linear-gradient(rgba(57,255,20,.1) 1px,transparent 1px),linear-gradient(90deg,rgba(57,255,20,.1) 1px,transparent 1px);background-size:52px 52px;-webkit-mask-image:radial-gradient(ellipse at 50% 60%,#000,transparent 78%);mask-image:radial-gradient(ellipse at 50% 60%,#000,transparent 78%)}
 .wg3-weapon-stage:after{content:"";position:absolute;left:50%;bottom:9%;width:min(66%,600px);height:46px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(ellipse,rgba(0,0,0,.55),transparent 70%);filter:blur(12px);pointer-events:none}
 
-.wg3-weapon-fire{position:relative;width:min(84%,860px);isolation:isolate;transform:translateY(25%)}
-.wg3-weapon-fire:before{content:"";position:absolute;left:-12%;right:-12%;top:-40%;bottom:-30%;z-index:-1;border-radius:50%;background:radial-gradient(ellipse at 50% 38%,rgba(255,92,18,.1),transparent 62%);animation:wg3-fire-breathe 3.4s ease-in-out infinite alternate}
-.wg3-weapon-fire-canvas{position:absolute;z-index:0;left:-10%;top:-75%;width:120%;height:197%;pointer-events:none;opacity:0;transition:opacity .6s ease}
-.wg3-weapon-fire[data-fire="live"] .wg3-weapon-fire-canvas,.wg3-weapon-fire[data-fire="static"] .wg3-weapon-fire-canvas{opacity:1}
-.wg3-weapon-fire-img{position:relative;z-index:1;display:block;width:100%;height:auto;pointer-events:none;-webkit-user-drag:none;user-select:none;
-  filter:drop-shadow(0 0 2px rgba(255,150,60,.7)) drop-shadow(0 0 12px rgba(255,92,18,.3)) drop-shadow(0 22px 22px rgba(0,0,0,.72));animation:wg3-fire-flicker 2.7s ease-in-out infinite}
-/* Luz do fogo no metal: laranja forte nas bordas de cima, some para baixo. */
-.wg3-weapon-fire-heat{position:absolute;inset:0;z-index:2;pointer-events:none;mix-blend-mode:screen;
-  -webkit-mask-image:var(--weapon-mask);mask-image:var(--weapon-mask);-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
-  background:linear-gradient(180deg,rgba(255,160,48,.62),rgba(255,84,10,.2) 42%,transparent 78%);animation:wg3-fire-heat 2.2s ease-in-out infinite alternate}
 
-@keyframes wg3-fire-flicker{0%,100%{filter:drop-shadow(0 0 2px rgba(255,150,60,.7)) drop-shadow(0 0 16px rgba(255,92,18,.4)) drop-shadow(0 22px 22px rgba(0,0,0,.72)) brightness(1)}38%{filter:drop-shadow(0 0 3px rgba(255,170,70,.85)) drop-shadow(0 0 22px rgba(255,100,20,.55)) drop-shadow(0 22px 22px rgba(0,0,0,.72)) brightness(1.05)}70%{filter:drop-shadow(0 0 2px rgba(255,140,50,.6)) drop-shadow(0 0 14px rgba(255,86,16,.34)) drop-shadow(0 22px 22px rgba(0,0,0,.72)) brightness(.98)}}
-@keyframes wg3-fire-heat{from{opacity:.55}to{opacity:1}}
-@keyframes wg3-fire-breathe{from{opacity:.65;transform:scale(.97)}to{opacity:1;transform:scale(1.03)}}
-@media(max-width:620px){.wg3-weapon-stage{min-height:300px}.wg3-weapon-fire{width:92%}}
-@media(prefers-reduced-motion:reduce){.wg3-weapon-fire:before,.wg3-weapon-fire-img,.wg3-weapon-fire-heat{animation:none}}
+@media(max-width:620px){.wg3-weapon-stage{min-height:300px}}
+
+.wg3-weapon-img{display:block;width:min(88%,860px);height:auto;pointer-events:none;-webkit-user-drag:none;user-select:none;filter:drop-shadow(0 22px 22px rgba(0,0,0,.72))}
