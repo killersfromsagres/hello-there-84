@@ -40,6 +40,30 @@ async function assemble(sourceDir, outputDir, outputBase, urlModulePath, pattern
   console.log(`[media] /assets/${outputName}: ${bytes.length.toLocaleString()} bytes from ${files.length} chunk(s)`);
 }
 
+async function assembleWeaponFromDataUri(sourceModulePath, outputPath) {
+  const source = await readFile(sourceModulePath, 'utf8');
+  const match = source.match(/data:image\/webp;base64,([A-Za-z0-9+/=]+)/);
+  if (!match) throw new Error(`Weapon data URI not found in ${sourceModulePath}`);
+
+  const bytes = Buffer.from(match[1], 'base64');
+  const isWebP = bytes.subarray(0, 4).toString('ascii') === 'RIFF' && bytes.subarray(8, 12).toString('ascii') === 'WEBP';
+  if (!isWebP || bytes.length < 10_000) {
+    throw new Error(`Weapon asset is invalid or truncated: ${bytes.length} bytes`);
+  }
+
+  await mkdir('public/assets', { recursive: true });
+  await writeFile(outputPath, bytes);
+  console.log(`[media] /assets/zangadao-favorite-weapon-v2.webp: ${bytes.length.toLocaleString()} bytes`);
+}
+
 // Rebuild the hero from the exact banner supplied for the site. Keeping the binary
 // generated at build time avoids shipping a multi-megabyte source image in Git.
 await assemble('src/assets/banner-user', 'public/assets', 'wicked-grin-hero', 'src/assets/hero-url.ts', /^part\d+\.b64$/);
+
+// A imagem da arma fica em base64 no repositório apenas como fonte textual. No build/dev,
+// ela é decodificada para um arquivo WebP real no mesmo domínio do site. Isso evita bloqueio
+// de data: URI por CSP e garante que o navegador consiga renderizar a imagem normalmente.
+await assembleWeaponFromDataUri(
+  'src/assets/zangadao-weapon-inline.ts',
+  'public/assets/zangadao-favorite-weapon-v2.webp',
+);
