@@ -14,7 +14,7 @@ async function assemble(sourceDir, outputDir, outputBase, urlModulePath, pattern
     .replace(/\s+/g, '');
 
   const bytes = Buffer.from(encoded, 'base64');
-  if (bytes.length < 100_000) {
+  if (bytes.length < 20_000) {
     throw new Error(`Hero asset looks truncated: ${bytes.length} bytes from ${files.length} chunks`);
   }
 
@@ -56,9 +56,9 @@ async function assembleWeaponFromDataUri(sourceModulePath, outputPath) {
   console.log(`[media] /assets/zangadao-favorite-weapon-v2.webp: ${bytes.length.toLocaleString()} bytes`);
 }
 
-// Rebuild the hero from the exact banner supplied for the site. Keeping the binary
+// Rebuild the hero from the latest banner supplied for the site. Keeping the binary
 // generated at build time avoids shipping a multi-megabyte source image in Git.
-await assemble('src/assets/banner-user', 'public/assets', 'wicked-grin-hero', 'src/assets/hero-url.ts', /^part\d+\.b64$/);
+await assemble('src/assets/banner-user-v2', 'public/assets', 'wicked-grin-hero', 'src/assets/hero-url.ts', /^part\d+\.b64$/);
 
 // A imagem da arma fica em base64 no repositório apenas como fonte textual. No build/dev,
 // ela é decodificada para um arquivo WebP real no mesmo domínio do site. Isso evita bloqueio
