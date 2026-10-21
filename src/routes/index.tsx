@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { ArrowRight, Crosshair, X } from 'lucide-react';
 import { SiteShell } from '@/components/wg/SiteShell';
 import { OperatorSpotlight } from '@/components/wg/OperatorSpotlight';
+import { HERO_URL } from '@/assets/hero-url';
 import { CTA, Counter, GlassCard, Marquee, MemberCard, PillarCard, SectionTitle } from '@/components/wg/UI';
 import { clanStats, members, news } from '@/data/wicked-v3';
 
@@ -13,7 +14,7 @@ export const Route = createFileRoute('/')({
     { name: 'description', content: 'Wicked Grin: clã de Combat Arms. Unidos pela habilidade, movidos pela paixão.' },
     { property: 'og:title', content: 'Wicked Grin — Mais que um clã.' },
     { property: 'og:description', content: 'Trabalho em equipe, disciplina e a busca incansável pela grandeza.' },
-    { property: 'og:image', content: '/assets/wicked-grin-hero.webp' },
+    { property: 'og:image', content: HERO_URL },
   ] }),
 });
 
@@ -24,7 +25,7 @@ function HomePage() {
       <section className="wg3-hero wg3-hero-banner">
         <div className="wg3-hero-media" aria-hidden="true">
           <img
-            src="/assets/wicked-grin-hero.webp"
+            src={HERO_URL}
             alt=""
             width={1672}
             height={941}

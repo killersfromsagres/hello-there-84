@@ -71,3 +71,33 @@
   .wg3-hero-banner .wg3-hero-media img{width:auto!important;max-width:100%;margin-inline:auto;aspect-ratio:1672/941;
     -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
 }
+
+/* Ponteiro personalizado (mira neon). O cursor do sistema só some depois do primeiro movimento do mouse
+   (classe .wg3-pointer-on, ligada pelo SiteShell); campos de texto mantêm o cursor normal. */
+.wg3-site{cursor:auto!important}
+.wg3-site.wg3-pointer-on,.wg3-site.wg3-pointer-on *{cursor:none!important}
+.wg3-site.wg3-pointer-on :is(input,textarea,select,[contenteditable="true"]){cursor:auto!important}
+
+.wg3-pointer,.wg3-pointer-dot{position:fixed;left:0;top:0;z-index:10000;pointer-events:none;opacity:0;transition:opacity .18s ease;will-change:transform}
+.wg3-pointer i{display:block;width:38px;height:38px;margin:-19px 0 0 -19px;border:1.5px solid rgba(57,255,20,.78);border-radius:50%;
+  box-shadow:0 0 16px rgba(57,255,20,.38),inset 0 0 10px rgba(57,255,20,.12);
+  background-image:linear-gradient(#39ff14,#39ff14),linear-gradient(#39ff14,#39ff14),linear-gradient(#39ff14,#39ff14),linear-gradient(#39ff14,#39ff14);
+  background-repeat:no-repeat;background-size:1.5px 8px,1.5px 8px,8px 1.5px,8px 1.5px;background-position:50% 0,50% 100%,0 50%,100% 50%;
+  transition:transform .24s cubic-bezier(.2,.8,.2,1),border-color .2s ease,background-color .2s ease}
+.wg3-pointer-dot{width:6px;height:6px;margin:-3px 0 0 -3px;border-radius:50%;background:#39ff14;box-shadow:0 0 10px #39ff14,0 0 2px #fff}
+
+.wg3-pointer-on .wg3-pointer,.wg3-pointer-on .wg3-pointer-dot{opacity:1}
+.wg3-pointer-on.is-pointer-away .wg3-pointer,.wg3-pointer-on.is-pointer-away .wg3-pointer-dot,
+.wg3-pointer-on.is-pointer-field .wg3-pointer,.wg3-pointer-on.is-pointer-field .wg3-pointer-dot{opacity:0}
+
+.is-pointer-link .wg3-pointer i{transform:scale(1.4) rotate(45deg);border-color:#7cff3a;background-color:rgba(57,255,20,.1)}
+.is-pointer-down .wg3-pointer i{transform:scale(.78)}
+.is-pointer-link.is-pointer-down .wg3-pointer i{transform:scale(1.12) rotate(45deg)}
+
+@media(pointer:coarse),(hover:none){.wg3-pointer,.wg3-pointer-dot{display:none}}
+@media(prefers-reduced-motion:reduce){.wg3-pointer i{transition:none}}
+
+/* Bloco "A TAG NÃO É DADA": fundo bem mais escuro e texto reforçado para leitura clara sobre a arte. */
+.wg3-recruit-cta h2{color:#fff;text-shadow:0 3px 0 rgba(0,0,0,.55),0 8px 34px rgba(0,0,0,.9)}
+.wg3-recruit-cta p{color:#e1e8e1;text-shadow:0 2px 14px rgba(0,0,0,.95),0 0 3px rgba(0,0,0,.7)}
+.wg3-recruit-cta .wg3-kicker{text-shadow:0 0 12px rgba(0,0,0,.95)}

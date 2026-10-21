@@ -1,7 +1,11 @@
 import { Link, useRouterState } from '@tanstack/react-router';
-import { Crosshair, Search, Volume2, VolumeX, Menu, X } from 'lucide-react';
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { Search, Volume2, VolumeX, Menu, X } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { HERO_URL } from '@/assets/hero-url';
 import { getStoredMuted, installSiteAudioUnlock, setSiteAudioMuted, startSiteAudio } from '@/lib/site-audio';
+
+// Fundo do bloco "A TAG NÃO É DADA" usa o mesmo banner, com a URL (com hash) vinda do build.
+const siteVars = { '--wg3-hero-bg': `url(${HERO_URL})` } as CSSProperties;
 
 const nav = [
   ['/', 'INÍCIO'],
@@ -23,6 +27,78 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const [loaded, setLoaded] = useState(false);
   const [progress, setProgress] = useState(8);
   const spotlightRef = useRef<HTMLDivElement>(null);
+  const siteRef = useRef<HTMLDivElement>(null);
+  const ringRef = useRef<HTMLDivElement>(null);
+  const dotRef = useRef<HTMLDivElement>(null);
+
+  // Ponteiro personalizado (mira). O cursor do sistema só é escondido depois do primeiro movimento do
+  // mouse, então nunca fica sem ponteiro. Só transform em rAF: nada de layout ou re-render do React.
+  useEffect(() => {
+    const site = siteRef.current;
+    const ring = ringRef.current;
+    const dot = dotRef.current;
+    if (!site || !ring || !dot) return;
+    if (!window.matchMedia?.('(pointer: fine)').matches) return;
+
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let x = 0;
+    let y = 0;
+    let rx = 0;
+    let ry = 0;
+    let frame = 0;
+    let active = false;
+    let lastTarget: Element | null = null;
+
+    const place = (el: HTMLElement, px: number, py: number) => {
+      el.style.transform = `translate3d(${px.toFixed(1)}px, ${py.toFixed(1)}px, 0)`;
+    };
+    const tick = () => {
+      frame = 0;
+      const ease = reduced ? 1 : 0.24;
+      rx += (x - rx) * ease;
+      ry += (y - ry) * ease;
+      place(ring, rx, ry);
+      if (Math.abs(x - rx) > 0.15 || Math.abs(y - ry) > 0.15) frame = window.requestAnimationFrame(tick);
+    };
+    const classify = (target: EventTarget | null) => {
+      if (!(target instanceof Element) || target === lastTarget) return;
+      lastTarget = target;
+      site.classList.toggle('is-pointer-field', !!target.closest('input, textarea, select, [contenteditable="true"]'));
+      site.classList.toggle('is-pointer-link', !!target.closest('a[href], button, [role="button"], summary, label, .neon-btn, .ghost-btn'));
+    };
+    const onMove = (event: PointerEvent) => {
+      if (event.pointerType === 'touch') return;
+      x = event.clientX;
+      y = event.clientY;
+      place(dot, x, y);
+      if (!active) {
+        active = true;
+        rx = x;
+        ry = y;
+        place(ring, x, y);
+        site.classList.add('wg3-pointer-on');
+      }
+      site.classList.remove('is-pointer-away');
+      classify(event.target);
+      if (!frame) frame = window.requestAnimationFrame(tick);
+    };
+    const onDown = () => site.classList.add('is-pointer-down');
+    const onUp = () => site.classList.remove('is-pointer-down');
+    const onLeave = () => site.classList.add('is-pointer-away');
+
+    window.addEventListener('pointermove', onMove, { passive: true });
+    window.addEventListener('pointerdown', onDown, { passive: true });
+    window.addEventListener('pointerup', onUp, { passive: true });
+    document.documentElement.addEventListener('mouseleave', onLeave);
+    return () => {
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerdown', onDown);
+      window.removeEventListener('pointerup', onUp);
+      document.documentElement.removeEventListener('mouseleave', onLeave);
+      if (frame) window.cancelAnimationFrame(frame);
+      site.classList.remove('wg3-pointer-on', 'is-pointer-away', 'is-pointer-down', 'is-pointer-link', 'is-pointer-field');
+    };
+  }, []);
 
   useEffect(() => {
     // Two updates instead of a 65 ms interval: the old loader forced repeated full
@@ -92,7 +168,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
   };
 
   return (
-    <div className="wg3-site">
+    <div ref={siteRef} className="wg3-site" style={siteVars}>
       <div className={`wg3-preloader ${loaded ? 'is-loaded' : ''}`} aria-hidden={loaded}>
         <div className="wg3-preloader-mark">WG</div>
         <span>CARREGANDO OPERAÇÃO…</span>
@@ -100,7 +176,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
         <b>{String(progress).padStart(3, '0')}%</b>
       </div>
 
-      <div className="wg3-cursor" aria-hidden="true"><Crosshair /></div>
+      <div ref={ringRef} className="wg3-pointer" aria-hidden="true"><i /></div>
+      <div ref={dotRef} className="wg3-pointer-dot" aria-hidden="true" />
       <div ref={spotlightRef} className="wg3-spotlight" aria-hidden="true" />
       <div className="wg3-noise" aria-hidden="true" />
 

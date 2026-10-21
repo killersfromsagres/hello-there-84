@@ -10,6 +10,7 @@ import operatorSpotlightCss from '../operator-spotlight.css?url';
 import stabilityCss from '../performance-stability.css?url';
 import cursorFixCss from '../cursor-fix.css?url';
 import { reportLovableError } from '../lib/lovable-error-reporting';
+import { HERO_URL } from '../assets/hero-url';
 
 function NotFoundComponent() {
   return <div className="wg3-site"><div className="wg3-page-hero" style={{ minHeight: '100vh', alignItems: 'center' }}><div className="wg3-shell"><span className="wg3-kicker">ERRO // 404</span><h1 style={{ fontFamily: 'Black Ops One', fontSize: 'clamp(4rem,10vw,9rem)', margin: '14px 0' }}>ÁREA <em style={{ color: '#39ff14', fontStyle: 'normal' }}>RESTRITA</em></h1><p>Essa coordenada não faz parte da operação.</p><Link to="/" className="neon-btn" style={{ marginTop: 24 }}>VOLTAR PARA A BASE</Link></div></div></div>;
@@ -43,7 +44,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: 'stylesheet', href: stabilityCss },
       { rel: 'stylesheet', href: cursorFixCss },
       { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' },
-      { rel: 'preload', href: '/assets/wicked-grin-hero.webp', as: 'image', type: 'image/webp' },
+      { rel: 'preload', href: HERO_URL, as: 'image', type: 'image/webp' },
       { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
       { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous' },
       { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Black+Ops+One&family=Inter:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap' },
