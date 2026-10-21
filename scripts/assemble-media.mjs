@@ -14,15 +14,13 @@ async function assemble(sourceDir, outputDir, outputBase, urlModulePath, pattern
     .replace(/\s+/g, '');
 
   const bytes = Buffer.from(encoded, 'base64');
-  if (bytes.length < 20_000) {
-    throw new Error(`Hero asset looks truncated: ${bytes.length} bytes from ${files.length} chunks`);
+  if (bytes.length < 250_000) {
+    throw new Error(`Hero HQ looks truncated: ${bytes.length} bytes from ${files.length} chunks`);
   }
 
   const isWebP = bytes.subarray(0, 4).toString('ascii') === 'RIFF' && bytes.subarray(8, 12).toString('ascii') === 'WEBP';
-  if (!isWebP) throw new Error('Hero asset is not a valid WebP file');
+  if (!isWebP) throw new Error('Hero HQ is not a valid WebP file');
 
-  // O hospedeiro serve /assets/* com cache de 1 ano (immutable). Por isso o nome do arquivo leva um
-  // hash do conteúdo: trocar o banner gera uma URL nova e o navegador nunca mostra a versão antiga.
   const hash = createHash('sha1').update(bytes).digest('hex').slice(0, 10);
   const outputName = `${outputBase}-${hash}.webp`;
   await mkdir(outputDir, { recursive: true });
@@ -40,6 +38,5 @@ async function assemble(sourceDir, outputDir, outputBase, urlModulePath, pattern
   console.log(`[media] /assets/${outputName}: ${bytes.length.toLocaleString()} bytes from ${files.length} chunk(s)`);
 }
 
-// Rebuild the hero from the latest banner supplied for the site. Keeping the binary
-// generated at build time avoids shipping a multi-megabyte source image in Git.
-await assemble('src/assets/banner-user-v2', 'public/assets', 'wicked-grin-hero', 'src/assets/hero-url.ts', /^part\d+\.b64$/);
+// Banner Wicked Grin HQ: mantém 1536x1024 e qualidade alta, sem redimensionar no build.
+await assemble('src/assets/banner-user-hq', 'public/assets', 'wicked-grin-hero-hq', 'src/assets/hero-url.ts', /^part\d+\.b64$/);
