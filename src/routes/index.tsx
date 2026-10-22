@@ -39,8 +39,8 @@ function HomePage() {
             <img
               src={HERO_FALLBACK_URL}
               alt=""
-              width={1536}
-              height={1024}
+              width={3072}
+              height={2048}
               fetchPriority="high"
               decoding="async"
             />
